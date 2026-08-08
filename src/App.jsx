@@ -151,3 +151,4 @@ export default function App() {
       </div>
       <div style={{ padding: '20px', flex: '1', maxWidth: '1200px', width: '100%', margin: '-40px auto 0 auto', boxSizing: 'border-box' }}>
         {activeTab === 'empty' && (
+          <div style={{ textAlign: 'center', padding: '50px 20px', background: '#fff', borderRadius: '20px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
