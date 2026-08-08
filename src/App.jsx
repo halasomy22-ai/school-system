@@ -150,5 +150,19 @@ export default function App() {
         </div>
       </div>
       <div style={{ padding: '20px', flex: '1', maxWidth: '1200px', width: '100%', margin: '-40px auto 0 auto', boxSizing: 'border-box' }}>
-        {activeTab === 'empty' && (
+               {activeTab === 'empty' && (
           <div style={{ textAlign: 'center', padding: '50px 20px', background: '#fff', borderRadius: '20px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
+            <h2>مرحباً بك في نظام إدارة المدرسة</h2>
+            <p style={{ color: '#666' }}>الرجاء اختيار أحد الأقسام من الأعلى للبدء في إدارة البيانات.</p>
+          </div>
+        )}
+        {activeTab === 'students' && <StudentsSection />}
+        {activeTab === 'classes' && <ClassesSection />}
+        {activeTab === 'teachers' && <TeachersSection />}
+        {activeTab === 'accounts' && <AccountsSection />}
+        {activeTab === 'results' && <ResultsSection />}
+        {activeTab === 'dashboard' && <DashboardSection />}
+      </div>
+    </div>
+  );
+}
