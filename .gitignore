@@ -1,0 +1,18 @@
+# مجلدات الاعتماديات والتشغيل (يمنع رفعها لأنها ثقيلة جداً)
+node_modules/
+dist/
+dist-ssr/
+
+# الملفات السحابية والسرية (يمنع رفعها لحماية بياناتك)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.vercel/
+
+# ملفات سجلات الأخطاء والنظام
+*.log
+logs/
+.DS_Store
+.vscode/
