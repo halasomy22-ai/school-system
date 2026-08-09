@@ -148,11 +148,7 @@ export default function DashboardSection({ users, setUsers, onBack }) {
                 {String(u.loginName) !== 'admin' && String(u.loginName) !== 'محمد' && (
                   <button onClick={(e) => { e.stopPropagation(); handleDeleteUser(u.id); }} onMouseEnter={playHover} style={{ background: '#fee2e2', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '6px 14px', borderRadius: '15px', fontSize: '12px', fontWeight: 'bold' }}>حذف</button>
                 )}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div style={{ background: '#ffffff', padding: '20px', borderRadius: '24px', flex: '1 1 300px', border: '1px solid #eaddf2' }}>
+                      <div style={{ background: '#ffffff', padding: '20px', borderRadius: '24px', flex: '1 1 300px', border: '1px solid #eaddf2' }}>
           <h4 style={{ marginTop: 0, color: '#3d145a', borderBottom: '1px solid #eaddf2', paddingBottom: '10px', fontWeight: '700' }}>لوحة الصلاحيات والبيانات</h4>
           {selectedUser ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
@@ -184,5 +180,9 @@ export default function DashboardSection({ users, setUsers, onBack }) {
             <p style={{ textAlign: 'center', color: '#7a6687', fontSize: '14px', margin: '20px 0' }}>برجاء اختيار مستخدم لعرض صلاحياته</p>
           )}
         </div>
+      </div>
+    </div>
+  );
+};
 
-              
+export default DashboardSection;
