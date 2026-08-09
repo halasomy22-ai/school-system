@@ -92,29 +92,36 @@ export default function App() {
     localStorage.clear();
   };
 
-  // واجهة صفحة تسجيل الدخول إذا لم يكن المستخدم مسجلاً
   if (!isLoggedIn) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: 'linear-gradient(180deg, #3d145a 0%, #5c2483 100%)', padding: '15px', direction: 'rtl', fontFamily: 'system-ui' }}>
-        <form onSubmit={handleLogin} style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(10px)', padding: '35px 25px', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.2)', width: '100%', maxWidth: '360px', boxShadow: '0 15px 35px rgba(0,0,0,0.2)' }}>
-          <div style={{ width: '60px', height: '60px', background: '#fff', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0 auto 15px auto', fontSize: '26px', color: '#5c2483' }}>👤</div>
-          <h2 style={{ textAlign: 'center', color: '#fff', marginBottom: '5px', fontWeight: '700' }}>مدرسة الشروق السودانية</h2>
-          <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.7)', fontSize: '13px', marginTop: 0, marginBottom: '25px' }}>بوابة إدارة النظام الإلكتروني المتكامل</p>
-          <div style={{ marginBottom: '18px', textAlign: 'right' }}>
-            <label style={{ fontSize: '13px', color: '#fff', marginBottom: '5px', display: 'block' }}>اسم الدخول</label>
-            <input type="text" placeholder="admin" value={username} onChange={e => setUsername(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '25px', border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.1)', color: '#fff', boxSizing: 'border-box', textAlign: 'right', outline: 'none' }} required />
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: 'linear-gradient(135deg, #0e1e38 0%, #1a365d 60%, #2b4c7e 100%)', padding: '15px', direction: 'rtl', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+        <form onSubmit={handleLogin} style={{ background: 'rgba(255, 255, 255, 0.06)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', padding: '40px 30px', borderRadius: '28px', border: '1px solid rgba(255, 255, 255, 0.12)', width: '100%', maxWidth: '380px', boxShadow: '0 20px 50px rgba(0,0,0,0.4)' }}>
+          
+          {/* أيقونة الشعار باللون الأصفر الذهبي المتناسق */}
+          <div style={{ width: '70px', height: '70px', background: '#f6c23e', borderRadius: '22px', display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0 auto 20px auto', fontSize: '32px', boxShadow: '0 8px 20px rgba(246, 194, 62, 0.3)' }}>☀️</div>
+          
+          <h2 style={{ textAlign: 'center', color: '#ffffff', marginBottom: '8px', fontWeight: '800', fontSize: '23px' }}>مدارس الشروق السودانية</h2>
+          <p style={{ textAlign: 'center', color: '#f6c23e', fontSize: '13px', marginTop: 0, marginBottom: '30px', fontWeight: '600', letterSpacing: '0.5px' }}>حضانة - ابتدائي - متوسط - ثانوي</p>
+          
+          <div style={{ marginBottom: '20px', textAlign: 'right' }}>
+            <label style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '6px', display: 'block', fontWeight: '500' }}>اسم المستخدم</label>
+            <input type="text" placeholder="admin" value={username} onChange={e => setUsername(e.target.value)} style={{ width: '100%', padding: '14px 16px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.2)', background: 'rgba(255, 255, 255, 0.06)', color: '#fff', boxSizing: 'border-box', textAlign: 'right', outline: 'none', fontSize: '14px' }} required />
           </div>
-          <div style={{ marginBottom: '22px', textAlign: 'right' }}>
-            <label style={{ fontSize: '13px', color: '#fff', marginBottom: '5px', display: 'block' }}>كلمة المرور</label>
-            <input type="password" placeholder="•••••" value={password} onChange={e => setPassword(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '25px', border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.1)', color: '#fff', boxSizing: 'border-box', textAlign: 'right', outline: 'none' }} required />
+          
+          <div style={{ marginBottom: '28px', textAlign: 'right' }}>
+            <label style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '6px', display: 'block', fontWeight: '500' }}>كلمة المرور</label>
+            <input type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} style={{ width: '100%', padding: '14px 16px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.2)', background: 'rgba(255, 255, 255, 0.06)', color: '#fff', boxSizing: 'border-box', textAlign: 'right', outline: 'none', fontSize: '14px' }} required />
           </div>
-          <button type="submit" onMouseEnter={playHover} style={{ width: '100%', padding: '14px', background: '#fff', color: '#5c2483', border: 'none', borderRadius: '25px', fontWeight: 'bold', cursor: 'pointer', fontSize: '15px' }}>دخول النظام</button>
+          
+          {/* زر دخول بلون الهوية الأصفر والكتابة بالأزرق */}
+          <button type="submit" onMouseEnter={playHover} style={{ width: '100%', padding: '14px', background: '#f6c23e', color: '#1a365d', border: 'none', borderRadius: '14px', fontWeight: '700', cursor: 'pointer', fontSize: '16px', boxShadow: '0 8px 25px rgba(246, 194, 62, 0.2)', transition: 'all 0.2s' }}>دخول النظام</button>
+          
+          <p style={{ textAlign: 'center', color: 'rgba(255, 255, 255, 0.4)', fontSize: '11px', marginTop: '25px', marginBottom: 0 }}>جميع الحقوق محفوظة © مدارس الشروق</p>
         </form>
       </div>
     );
   }
 
-  // التوجيه المباشر والنظيف إلى لوحة التحكم المطورة بعد تسجيل الدخول الناجح
   return (
     <DashboardSection 
       selectedUser={currentUser} 
