@@ -26,10 +26,8 @@ const DashboardSection = ({
   return (
     <div style={{ width: '100%', minHeight: '100vh', background: '#f8f9fa', fontFamily: 'sans-serif', direction: 'rtl', display: 'flex', flexDirection: 'column' }}>
       
-      {/* الهيدر العلوي المطور والأزرار */}
       <div style={{ background: 'linear-gradient(135deg, #3d145a 0%, #5c2483 100%)', padding: '28px 20px', borderRadius: '0 0 36px 36px', boxShadow: '0 10px 30px rgba(92, 36, 131, 0.18)' }}>
         
-        {/* معلومات المستخدم وزر الخروج */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '28px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
             <div style={{ background: 'rgba(255,255,255,0.15)', padding: '12px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -39,61 +37,55 @@ const DashboardSection = ({
               <div style={{ color: '#ffffff', fontSize: '22px', fontWeight: '800', marginTop: '2px' }}>مرحباً: عثمان صديق</div>
             </div>
           </div>
-
           <button onClick={handleLogout} style={{ background: 'rgba(255, 255, 255, 0.1)', color: '#ffffff', border: '1px solid rgba(255, 255, 255, 0.25)', padding: '12px 28px', borderRadius: '16px', cursor: 'pointer', fontWeight: '700', fontSize: '15px' }}>
             خروج
           </button>
         </div>
 
-        {/* أزرار التحكم */}
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: '14px', maxWidth: '1000px', margin: '0 auto' }}>
-          {navItems.map((item) => {
-            const isActive = activeTab === item.key;
-            return (
-              <button
-                key={item.key}
-                onClick={() => setActiveTab(item.key)}
-                style={{
-                  flex: '1 1 150px', maxWidth: '200px', minWidth: '130px', padding: '16px 22px', borderRadius: '18px', border: isActive ? 'none' : '1px solid rgba(255,255,255,0.18)', fontSize: '18px', fontWeight: '800', cursor: 'pointer', textAlign: 'center',
-                  background: isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.07)',
-                  color: isActive ? '#5c2483' : '#ffffff'
-                }}
-              >
-                {item.label}
-              </button>
-            );
-          })}
+          {navItems.map((item) => (
+            <button
+              key={item.key}
+              onClick={() => setActiveTab(item.key)}
+              style={{
+                flex: '1 1 150px',
+                maxWidth: '200px',
+                minWidth: '130px',
+                padding: '16px 22px',
+                borderRadius: '18px',
+                fontSize: '18px',
+                fontWeight: '800',
+                cursor: 'pointer',
+                textAlign: 'center',
+                border: activeTab === item.key ? 'none' : '1px solid rgba(255,255,255,0.18)',
+                background: activeTab === item.key ? '#ffffff' : 'rgba(255, 255, 255, 0.07)',
+                color: activeTab === item.key ? '#5c2483' : '#ffffff'
+              }}
+            >
+              {item.label}
+            </button>
+          ))}
         </div>
 
       </div>
 
-      {/* منطقة عرض المحتوى الذكي */}
       <div style={{ flex: '1 0 auto', maxWidth: '1100px', width: '100%', margin: '40px auto 20px auto', padding: '0 20px', boxSizing: 'border-box' }}>
-
         {activeTab === 'home' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', width: '100%' }}>
             <div style={{ width: '100%', borderRadius: '32px', background: 'linear-gradient(135deg, #2b0b42 0%, #3d145a 100%)', padding: '40px', boxSizing: 'border-box', textAlign: 'center', boxShadow: '0 15px 30px rgba(0,0,0,0.1)' }}>
               <h1 style={{ color: '#ffca28', fontSize: '32px', fontWeight: '900', margin: '0 0 10px 0' }}>مدرسة الشروق السودانية - اسوان</h1>
               <p style={{ color: '#2ecc71', fontSize: '20px', fontWeight: '700', margin: '0', background: 'rgba(46, 204, 113, 0.1)', padding: '6px 24px', borderRadius: '50px', display: 'inline-block' }}>( ابتدائي - متوسط - ثانوي )</p>
             </div>
-
-            <UsersPermissionsSection 
-              selectedUser={selectedUser} 
-              handlePermissionChange={handlePermissionChange} 
-              playHover={playHover} 
-            />
+            <UsersPermissionsSection selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} playHover={playHover} />
           </div>
         )}
-
         {activeTab === 'students' && <StudentsSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
         {activeTab === 'classes' && <ClassesSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
         {activeTab === 'teachers' && <TeachersSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
         {activeTab === 'finance' && <AccountsSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
         {activeTab === 'results' && <ResultsSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
-
       </div>
 
-      {/* التذييل الثابت للحقوق */}
       <footer style={{ flexShrink: '0', width: '100%', background: '#ffffff', borderTop: '1px solid #eaddf2', padding: '16px 20px', boxSizing: 'border-box', textAlign: 'center' }}>
         <p style={{ margin: 0, color: '#3d145a', fontSize: '15px', fontWeight: '700', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <span>تم التصميم والتطوير بواسطة:</span>
