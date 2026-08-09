@@ -92,20 +92,7 @@ export default function App() {
     localStorage.clear();
   };
 
-  const getTabStyle = (tabName) => ({
-    padding: '12px 24px',
-    borderRadius: '25px',
-    border: activeTab === tabName ? 'none' : '1.5px solid rgba(255,255,255,0.7)',
-    fontWeight: '600',
-    cursor: 'pointer',
-    fontSize: '14px',
-    backgroundColor: activeTab === tabName ? '#ffffff' : 'rgba(255,255,255,0.1)',
-    color: activeTab === tabName ? '#3d145a' : '#ffffff',
-    backdropFilter: 'blur(5px)',
-    transition: 'all 0.2s ease',
-    whiteSpace: 'nowrap'
-  });
-
+  // واجهة صفحة تسجيل الدخول إذا لم يكن المستخدم مسجلاً
   if (!isLoggedIn) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: 'linear-gradient(180deg, #3d145a 0%, #5c2483 100%)', padding: '15px', direction: 'rtl', fontFamily: 'system-ui' }}>
@@ -127,42 +114,13 @@ export default function App() {
     );
   }
 
+  // التوجيه المباشر والنظيف إلى لوحة التحكم المطورة بعد تسجيل الدخول الناجح
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#f4f0f8', direction: 'rtl', fontFamily: 'system-ui' }}>
-      <div style={{ position: 'relative', background: 'linear-gradient(135deg, #3d145a 0%, #5c2483 100%)', padding: '30px 20px 70px 20px', borderRadius: '0 0 40px 40px', boxShadow: '0 10px 25px rgba(92, 36, 131, 0.2)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1200px', margin: '0 auto 30px auto', color: '#fff' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: '45px', height: '45px', background: 'rgba(255,255,255,0.25)', backdropFilter: 'blur(5px)', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '20px' }}>👤</div>
-            <div>
-              <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.8)' }}>مدرسة الشروق السودانية</div>
-              <div style={{ fontSize: '17px', fontWeight: '700' }}>مرحباً: {currentUser?.name}</div>
-            </div>
-          </div>
-          <button onClick={handleLogout} onMouseEnter={playHover} style={{ background: 'rgba(255,255,255,0.2)', color: '#fff', border: '1px solid rgba(255,255,255,0.4)', padding: '8px 20px', borderRadius: '20px', cursor: 'pointer', fontSize: '13px', fontWeight: '600' }}>خروج</button>
-        </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center', maxWidth: '1200px', margin: '0 auto' }}>
-          {currentUser?.permissions?.students && <button style={getTabStyle('students')} onMouseEnter={playHover} onClick={() => { playClick(); setActiveTab('students'); }}>الطلاب</button>}
-          {currentUser?.permissions?.classes && <button style={getTabStyle('classes')} onMouseEnter={playHover} onClick={() => { playClick(); setActiveTab('classes'); }}>الفصل</button>}
-          {currentUser?.permissions?.teachers && <button style={getTabStyle('teachers')} onMouseEnter={playHover} onClick={() => { playClick(); setActiveTab('teachers'); }}>المعلمين</button>}
-          {currentUser?.permissions?.finance && <button style={getTabStyle('accounts')} onMouseEnter={playHover} onClick={() => { playClick(); setActiveTab('accounts'); }}>الحسابات</button>}
-          {currentUser?.permissions?.admin && <button style={getTabStyle('results')} onMouseEnter={playHover} onClick={() => { playClick(); setActiveTab('results'); }}>النتيجة</button>}
-          {currentUser?.permissions?.admin && <button style={getTabStyle('dashboard')} onMouseEnter={playHover} onClick={() => { playClick(); setActiveTab('dashboard'); }}>لوحة التحكم</button>}
-        </div>
-      </div>
-      <div style={{ padding: '20px', flex: '1', maxWidth: '1200px', width: '100%', margin: '-40px auto 0 auto', boxSizing: 'border-box' }}>
-               {activeTab === 'empty' && (
-          <div style={{ textAlign: 'center', padding: '50px 20px', background: '#fff', borderRadius: '20px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
-            <h2>مرحباً بك في نظام إدارة المدرسة</h2>
-            <p style={{ color: '#666' }}>الرجاء اختيار أحد الأقسام من الأعلى للبدء في إدارة البيانات.</p>
-          </div>
-        )}
-        {activeTab === 'students' && <StudentsSection />}
-        {activeTab === 'classes' && <ClassesSection />}
-        {activeTab === 'teachers' && <TeachersSection />}
-        {activeTab === 'accounts' && <AccountsSection />}
-        {activeTab === 'results' && <ResultsSection />}
-        {activeTab === 'dashboard' && <DashboardSection />}
-      </div>
-    </div>
+    <DashboardSection 
+      selectedUser={currentUser} 
+      handlePermissionChange={() => {}} 
+      playHover={playHover} 
+      handleLogout={handleLogout} 
+    />
   );
 }
