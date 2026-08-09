@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-// استيراد كافة الملفات والأقسام الجاهزة من مشروعك
+// استيراد كافة الملفات والأقسام الجاهزة من مشروعك بما فيها ملف الصلاحيات الجديد المنفصل
 import StudentsSection from './StudentsSection';
 import ClassesSection from './ClassesSection';
 import TeachersSection from './TeachersSection';
 import AccountsSection from './AccountsSection';
 import ResultsSection from './ResultsSection';
+import UsersPermissionsSection from './UsersPermissionsSection'; // استدعاء الملف الجديد المنفصل
 
 const DashboardSection = ({ 
   selectedUser = null, 
@@ -12,7 +13,6 @@ const DashboardSection = ({
   playHover = () => {}, 
   handleLogout = () => {} 
 }) => {
-  // تم تعديل التبويب الافتراضي إلى home لتظهر اللوحة البنفسجية فوراً ويضيء الزر تلقائياً عند الدخول
   const [activeTab, setActiveTab] = useState('home');
 
   const navItems = [
@@ -60,7 +60,7 @@ const DashboardSection = ({
           </button>
         </div>
 
-        {/* أزرار التحكم - متجاوبة وعصرية */}
+        {/* أزرار التحكم */}
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: '14px', maxWidth: '1000px', margin: '0 auto' }}>
           {navItems.map((item) => {
             const isActive = activeTab === item.key;
@@ -94,21 +94,27 @@ const DashboardSection = ({
       {/* منطقة عرض المحتوى الذكي حسب الأقسام المستوردة من مشروعك */}
       <div style={{ flex: '1 0 auto', maxWidth: '1100px', width: '100%', margin: '40px auto 20px auto', padding: '0 20px', boxSizing: 'border-box' }}>
 
-        {/* 1. اللوحة الترحيبية الرئيسية باللونين الأصفر والأخضر - تظهر الآن تلقائياً فور الدخول كصفحة رئيسية بدلاً من الصندوق الأبيض القديم */}
+        {/* عند الوقوف على لوحة التحكم يعرض البانر المطور وبأسفله يسحب كود إدارة الصلاحيات من الملف المنفصل الجديد */}
         {activeTab === 'home' && (
-          <div style={{ width: '100%', borderRadius: '32px', background: 'linear-gradient(135deg, #2b0b42 0%, #3d145a 100%)', padding: '60px 40px', boxSizing: 'border-box', textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.12)', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.05)' }}>
-            <div style={{ position: 'absolute', top: '-10%', left: '-5%', width: '300px', height: '300px', background: 'rgba(92, 36, 131, 0.2)', filter: 'blur(80px)', borderRadius: '50%' }}></div>
-            <div style={{ position: 'absolute', bottom: '-10%', right: '-5%', width: '300px', height: '300px', background: 'rgba(40, 167, 69, 0.15)', filter: 'blur(80px)', borderRadius: '50%' }}></div>
-            <div style={{ marginBottom: '24px', background: 'rgba(255,255,255,0.06)', padding: '20px', borderRadius: '24px', display: 'inline-block' }}>
-              <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#ffca28" strokeWidth="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', width: '100%' }}>
+            
+            {/* البانر الترحيبي الأنيق للمدرسة */}
+            <div style={{ width: '100%', borderRadius: '32px', background: 'linear-gradient(135deg, #2b0b42 0%, #3d145a 100%)', padding: '40px', boxSizing: 'border-box', textAlign: 'center', boxShadow: '0 15px 30px rgba(0,0,0,0.1)' }}>
+              <h1 style={{ color: '#ffca28', fontSize: '32px', fontWeight: '900', margin: '0 0 10px 0' }}>مدرسة الشروق السودانية - اسوان</h1>
+              <p style={{ color: '#2ecc71', fontSize: '20px', fontWeight: '700', margin: '0', background: 'rgba(46, 204, 113, 0.1)', padding: '6px 24px', borderRadius: '50px', display: 'inline-block' }}>( ابتدائي - متوسط - ثانوي )</p>
             </div>
-            <h1 style={{ color: '#ffca28', fontSize: 'clamp(28px, 5vw, 46px)', fontWeight: '900', margin: '0 0 16px 0', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>مدرسة الشروق السودانية - اسوان</h1>
-            <p style={{ color: '#2ecc71', fontSize: 'clamp(18px, 3vw, 26px)', fontWeight: '700', margin: '0', background: 'rgba(46, 204, 113, 0.1)', padding: '10px 32px', borderRadius: '50px', border: '1px solid rgba(46, 204, 113, 0.2)', display: 'inline-block' }}>( ابتدائي - متوسط - ثانوي )</p>
-            <div style={{ marginTop: '40px', color: 'rgba(255,255,255,0.4)', fontSize: '14px', fontWeight: '500' }}>أهلاً بكم في المنصة الإلكترونية الرسمية لإدارة شؤون الطلاب والعملية التعليمية</div>
+
+            {/* استدعاء كود الصلاحيات من الملف المنفصل الجديد بكل نظافة */}
+            <UsersPermissionsSection 
+              selectedUser={selectedUser} 
+              handlePermissionChange={handlePermissionChange} 
+              playHover={playHover} 
+            />
+
           </div>
         )}
 
-        {/* تفعيل وتمرير الخصائص للأقسام الجاهزة بحماية كاملة لمنع الانهيار */}
+        {/* بقية الأقسام الجاهزة الأخرى */}
         {activeTab === 'students' && <StudentsSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
         {activeTab === 'classes' && <ClassesSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
         {activeTab === 'teachers' && <TeachersSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
