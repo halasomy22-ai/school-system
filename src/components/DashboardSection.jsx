@@ -152,7 +152,6 @@ export default function DashboardSection({ users, setUsers, onBack }) {
             ))}
           </div>
         </div>
-
         <div style={{ background: '#ffffff', padding: '20px', borderRadius: '24px', flex: '1 1 300px', border: '1px solid #eaddf2' }}>
           <h4 style={{ marginTop: 0, color: '#3d145a', borderBottom: '1px solid #eaddf2', paddingBottom: '10px', fontWeight: '700' }}>لوحة الصلاحيات والبيانات</h4>
           {selectedUser ? (
@@ -170,3 +169,20 @@ export default function DashboardSection({ users, setUsers, onBack }) {
                   { key: 'admin', label: 'صلاحية الأدمن والإدارة العليا' }
                 ].map(item => (
                   <label key={item.key} onMouseEnter={playHover} style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', padding: '12px 16px', background: '#f4f0f8', borderRadius: '20px' }}>
+                    <input 
+                      type="checkbox" 
+                      checked={!!selectedUser.permissions?.[item.key]} 
+                      onChange={(e) => handlePermissionChange(item.key, e.target.checked)}
+                      style={{ accentColor: '#5c2483', width: '18px', height: '18px', cursor: 'pointer' }}
+                    />
+                    <span style={{ fontSize: '14px', color: '#3d145a', fontWeight: '500' }}>{item.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <p style={{ textAlign: 'center', color: '#7a6687', fontSize: '14px', margin: '20px 0' }}>برجاء اختيار مستخدم لعرض صلاحياته</p>
+          )}
+        </div>
+
+              
