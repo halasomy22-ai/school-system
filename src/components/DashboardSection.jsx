@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
-// استيراد كافة الملفات والأقسام الجاهزة الموجودة في مشروعك
+// استيراد كافة الملفات والأقسام الجاهزة من مشروعك
 import StudentsSection from './StudentsSection';
 import ClassesSection from './ClassesSection';
 import TeachersSection from './TeachersSection';
 import AccountsSection from './AccountsSection';
 import ResultsSection from './ResultsSection';
 
-const DashboardSection = ({ playHover, handleLogout }) => {
-  // التبويب النشط الافتراضي هو لوحة التحكم الرئيسية
-  const [activeTab, setActiveTab] = useState('dashboard');
+const DashboardSection = ({ 
+  selectedUser = null, 
+  handlePermissionChange = () => {}, 
+  playHover = () => {}, 
+  handleLogout = () => {} 
+}) => {
+  // تم تغيير التبويب الافتراضي إلى home لمنع التداخل مع صفحة الدخول
+  const [activeTab, setActiveTab] = useState('home');
 
   const navItems = [
     { key: 'students', label: 'الطلاب' },
@@ -16,7 +21,7 @@ const DashboardSection = ({ playHover, handleLogout }) => {
     { key: 'teachers', label: 'المعلمين' },
     { key: 'finance', label: 'الحسابات' },
     { key: 'results', label: 'النتيجة' },
-    { key: 'dashboard', label: 'لوحة التحكم' },
+    { key: 'home', label: 'لوحة التحكم' }, // تم التعديل هنا إلى home
   ];
 
   return (
@@ -90,8 +95,8 @@ const DashboardSection = ({ playHover, handleLogout }) => {
       {/* منطقة عرض المحتوى الذكي حسب الأقسام المستوردة من مشروعك */}
       <div style={{ flex: '1 0 auto', maxWidth: '1100px', width: '100%', margin: '40px auto 20px auto', padding: '0 20px', boxSizing: 'border-box' }}>
         
-        {/* 1. اللوحة الترحيبية الرئيسية باللونين الأصفر والأخضر */}
-        {activeTab === 'dashboard' && (
+        {/* 1. اللوحة الترحيبية الرئيسية باللونين الأصفر والأخضر - تم تعديل الشرط هنا ليعمل مع home */}
+        {activeTab === 'home' && (
           <div style={{ width: '100%', borderRadius: '32px', background: 'linear-gradient(135deg, #2b0b42 0%, #3d145a 100%)', padding: '60px 40px', boxSizing: 'border-box', textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.12)', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.05)' }}>
             <div style={{ position: 'absolute', top: '-10%', left: '-5%', width: '300px', height: '300px', background: 'rgba(92, 36, 131, 0.2)', filter: 'blur(80px)', borderRadius: '50%' }}></div>
             <div style={{ position: 'absolute', bottom: '-10%', right: '-5%', width: '300px', height: '300px', background: 'rgba(40, 167, 69, 0.15)', filter: 'blur(80px)', borderRadius: '50%' }}></div>
@@ -104,20 +109,12 @@ const DashboardSection = ({ playHover, handleLogout }) => {
           </div>
         )}
 
-        {/* 2. تشغيل قسم الطلاب من ملفه الفعلي المستقل */}
-        {activeTab === 'students' && <StudentsSection playHover={playHover} />}
-
-        {/* 3. تشغيل قسم الفصول من ملفه الفعلي المستقل */}
-        {activeTab === 'classes' && <ClassesSection playHover={playHover} />}
-
-        {/* 4. تشغيل قسم المعلمين من ملفه الفعلي المستقل */}
-        {activeTab === 'teachers' && <TeachersSection playHover={playHover} />}
-
-        {/* 5. تشغيل قسم الحسابات من ملفه الفعلي المستقل */}
-        {activeTab === 'finance' && <AccountsSection playHover={playHover} />}
-
-        {/* 6. تشغيل قسم النتائج من ملفه الفعلي المستقل */}
-        {activeTab === 'results' && <ResultsSection playHover={playHover} />}
+        {/* تفعيل وتمرير الخصائص للأقسام الجاهزة بحماية كاملة لمنع الانهيار */}
+        {activeTab === 'students' && <StudentsSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
+        {activeTab === 'classes' && <ClassesSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
+        {activeTab === 'teachers' && <TeachersSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
+        {activeTab === 'finance' && <AccountsSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
+        {activeTab === 'results' && <ResultsSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
 
       </div>
 
