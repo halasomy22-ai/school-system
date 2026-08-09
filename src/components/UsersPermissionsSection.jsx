@@ -5,13 +5,13 @@ const UsersPermissionsSection = ({
   handlePermissionChange = () => {}, 
   playHover = () => {} 
 }) => {
-  // قائمة المستخدمين النشطين في النظام حالياً
+  // قائمة المستخدمين النشطين في النظام
   const [systemUsers, setSystemUsers] = useState([
     { id: 1, name: "عثمان صديق", loginName: "admin", role: "أدمن", pin: "123", permissions: { students: true, classes: true, teachers: true, finance: true, results: true } },
     { id: 2, name: "أستاذ محمد", loginName: "mohamed", role: "معلم", pin: "123456", permissions: { students: true, classes: true, teachers: false, finance: false, results: false } }
   ]);
 
-  // نموذج تهيئة إضافة مستخدم جديد
+  // نموذج إضافة مستخدم جديد
   const [newUser, setNewUser] = useState({
     name: '',
     loginName: '',
@@ -20,7 +20,6 @@ const UsersPermissionsSection = ({
     permissions: { students: false, classes: false, teachers: false, finance: false, results: false }
   });
 
-  // دالة لتغيير مربعات الاختيار للمستخدم الجديد قبل الحفظ
   const handleCheckboxChange = (permissionKey) => {
     setNewUser(prev => ({
       ...prev,
@@ -28,7 +27,6 @@ const UsersPermissionsSection = ({
     }));
   };
 
-  // دالة لتغيير صلاحيات المستخدمين الحاليين مباشرة من الجدول
   const handleExistingUserPermissionChange = (userId, permissionKey) => {
     setSystemUsers(prev => prev.map(user => {
       if (user.id === userId) {
@@ -40,7 +38,6 @@ const UsersPermissionsSection = ({
     }));
   };
 
-  // دالة حفظ وإضافة الحساب الجديد في النظام
   const saveNewUser = (e) => {
     e.preventDefault();
     if (!newUser.name || !newUser.loginName || !newUser.pin) {
@@ -57,7 +54,6 @@ const UsersPermissionsSection = ({
     setSystemUsers(prev => [...prev, createdUser]);
     alert(`تم إضافة ${newUser.role}: ${newUser.name} بنجاح وتعيين الصلاحيات!`);
     
-    // تفريغ الحقول بعد الحفظ الناجح
     setNewUser({
       name: '', loginName: '', pin: '', role: 'معلم',
       permissions: { students: false, classes: false, teachers: false, finance: false, results: false }
@@ -67,7 +63,7 @@ const UsersPermissionsSection = ({
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', width: '100%', direction: 'rtl', fontFamily: 'sans-serif' }}>
       
-      {/* 1. استمارة إضافة مستخدم وصلاحياته */}
+      {/* استمارة إضافة مستخدم وصلاحياته */}
       <div style={{ flex: '1 1 400px', background: '#ffffff', padding: '30px', borderRadius: '24px', boxShadow: '0 10px 25px rgba(0,0,0,0.03)', border: '1px solid #eaddf2' }}>
         <h3 style={{ color: '#3d145a', margin: '0 0 20px 0', borderBottom: '2px solid #f4f0f8', paddingBottom: '10px', fontWeight: '800' }}>➕ إضافة مستخدم وتعيين الصلاحيات</h3>
         
@@ -110,11 +106,11 @@ const UsersPermissionsSection = ({
             </div>
           </div>
 
-          <button type="submit" onMouseEnter={playHover} style={{ background: '#5c2483', color: '#fff', border: 'none', padding: '14px', borderRadius: '14px', fontSize: '16px', fontWeight: '700', cursor: 'pointer' }}>حفظ حساب المستخدم الجديد</button>
+          <button type="submit" style={{ background: '#5c2483', color: '#fff', border: 'none', padding: '14px', borderRadius: '14px', fontSize: '16px', fontWeight: '700', cursor: 'pointer' }}>حفظ حساب المستخدم الجديد</button>
         </form>
       </div>
 
-      {/* 2. جدول عرض وتعديل صلاحيات المستخدمين الحاليين */}
+      {/* جدول عرض وتعديل صلاحيات المستخدمين الحاليين */}
       <div style={{ flex: '2 1 500px', background: '#ffffff', padding: '30px', borderRadius: '24px', boxShadow: '0 10px 25px rgba(0,0,0,0.03)', border: '1px solid #eaddf2', overflowX: 'auto' }}>
         <h3 style={{ color: '#3d145a', margin: '0 0 20px 0', borderBottom: '2px solid #f4f0f8', paddingBottom: '10px', fontWeight: '800' }}>👥 مستخدمي النظام وصلاحياتهم النشطة</h3>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'right' }}>
@@ -136,4 +132,9 @@ const UsersPermissionsSection = ({
                   {user.name}
                   <div style={{ fontSize: '12px', color: '#7a6687', fontWeight: 'normal' }}>اسم الدخول: {user.loginName}</div>
                 </td>
-                <td style={{ padding: '14px 10px' }}><span style={{ background: user.role === 'أدمن' ? '#fff3cd' : '#e2f0d9', color: user.role === 'أدمن' ? '#856404' : '#385723', padding: '4px 10px', borderRadius: '8px', fontSize: '13px', fontWeight: '700' }}>{user.role}</span></td>
+                <td style={{ padding: '14px 10px' }}>
+                  <span style={{ background: user.role === 'أدمن' ? '#fff3cd' : '#e2f0d9', color: user.role === 'أدمن' ? '#856404' : '#385723', padding: '4px 10px', borderRadius: '8px', fontSize: '13px', fontWeight: '700' }}>
+                    {user.role}
+                  </span>
+                </td>
+                <td style={{ padding: '14px 10px', textAlign: 'center' }}><input type="checkbox" checked={user.permissions?.students || false} onChange={() => handleExistingUserPermissionChange(user.id, 'students')} style={{ accentColor: '#2ecc71', width: '16px', height: '16px' }} /></td>
