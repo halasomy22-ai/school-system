@@ -12,8 +12,8 @@ const DashboardSection = ({
   playHover = () => {}, 
   handleLogout = () => {} 
 }) => {
-  // تم تعديل التبويب الافتراضي إلى empty حتى لا يضيء زر لوحة التحكم ولا تظهر اللوحة إلا عند الضغط عليها
-  const [activeTab, setActiveTab] = useState('empty');
+  // تم تعديل التبويب الافتراضي إلى home لتظهر اللوحة البنفسجية فوراً ويضيء الزر تلقائياً عند الدخول
+  const [activeTab, setActiveTab] = useState('home');
 
   const navItems = [
     { key: 'students', label: 'الطلاب' },
@@ -42,7 +42,6 @@ const DashboardSection = ({
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             </div>
             <div>
-              {/* تم حذف سطر جمهورية السودان والاكتفاء بالترحيب باسمك الكريم */}
               <div style={{ color: '#ffffff', fontSize: '22px', fontWeight: '800', marginTop: '2px' }}>مرحباً: عثمان صديق</div>
             </div>
           </div>
@@ -94,16 +93,8 @@ const DashboardSection = ({
 
       {/* منطقة عرض المحتوى الذكي حسب الأقسام المستوردة من مشروعك */}
       <div style={{ flex: '1 0 auto', maxWidth: '1100px', width: '100%', margin: '40px auto 20px auto', padding: '0 20px', boxSizing: 'border-box' }}>
-        
-        {/* التوجيه الافتراضي النظيف عند الدخول (قبل الضغط على الأزرار) */}
-        {activeTab === 'empty' && (
-          <div style={{ textAlign: 'center', padding: '60px 20px', background: '#fff', borderRadius: '32px', boxShadow: '0 10px 30px rgba(0,0,0,0.04)', border: '1px solid #eaddf2' }}>
-            <h2 style={{ color: '#3d145a', fontWeight: '800' }}>مرحباً بك في نظام إدارة مدرسة الشروق</h2>
-            <p style={{ color: '#7a6687', fontSize: '16px', fontWeight: '500' }}>الرجاء اختيار أحد الأقسام من الأعلى للبدء في إدارة البيانات والعمليات التعليمية.</p>
-          </div>
-        )}
 
-        {/* 1. اللوحة الترحيبية الرئيسية باللونين الأصفر والأخضر - تظهر فقط عند الضغط على زر لوحة التحكم */}
+        {/* 1. اللوحة الترحيبية الرئيسية باللونين الأصفر والأخضر - تظهر الآن تلقائياً فور الدخول كصفحة رئيسية بدلاً من الصندوق الأبيض القديم */}
         {activeTab === 'home' && (
           <div style={{ width: '100%', borderRadius: '32px', background: 'linear-gradient(135deg, #2b0b42 0%, #3d145a 100%)', padding: '60px 40px', boxSizing: 'border-box', textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.12)', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.05)' }}>
             <div style={{ position: 'absolute', top: '-10%', left: '-5%', width: '300px', height: '300px', background: 'rgba(92, 36, 131, 0.2)', filter: 'blur(80px)', borderRadius: '50%' }}></div>
@@ -131,7 +122,6 @@ const DashboardSection = ({
         <p style={{ margin: 0, color: '#3d145a', fontSize: '15px', fontWeight: '700', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <span>تم التصميم والتطوير بواسطة:</span>
           <span style={{ color: '#5c2483', background: '#f4f0f8', padding: '4px 12px', borderRadius: '10px' }}>أستاذ عثمان صديق ( أبو حلا )</span>
-          {/* تم إصلاح ترميز رقم الهاتف وعلامات الاستفهام ليظهر بشكل صحيح */}
           <span style={{ color: '#7a6687', direction: 'ltr' }}>📞 01149169346</span>
         </p>
       </footer>
