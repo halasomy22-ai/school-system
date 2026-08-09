@@ -43,28 +43,31 @@ const DashboardSection = ({
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: '14px', maxWidth: '1000px', margin: '0 auto' }}>
-          {navItems.map((item) => (
-            <button
-              key={item.key}
-              onClick={() => setActiveTab(item.key)}
-              style={{
-                flex: '1 1 150px',
-                maxWidth: '200px',
-                minWidth: '130px',
-                padding: '16px 22px',
-                borderRadius: '18px',
-                fontSize: '18px',
-                fontWeight: '800',
-                cursor: 'pointer',
-                textAlign: 'center',
-                border: activeTab === item.key ? 'none' : '1px solid rgba(255,255,255,0.18)',
-                background: activeTab === item.key ? '#ffffff' : 'rgba(255, 255, 255, 0.07)',
-                color: activeTab === item.key ? '#5c2483' : '#ffffff'
-              }}
-            >
-              {item.label}
-            </button>
-          ))}
+          {navItems.map((item) => {
+            const isActive = activeTab === item.key;
+            return (
+              <button
+                key={item.key}
+                onClick={() => setActiveTab(item.key)}
+                style={{
+                  flex: '1 1 150px',
+                  maxWidth: '200px',
+                  minWidth: '130px',
+                  padding: '16px 22px',
+                  borderRadius: '18px',
+                  fontSize: '18px',
+                  fontWeight: '800',
+                  cursor: 'pointer',
+                  textAlign: 'center',
+                  border: isActive ? 'none' : '1px solid rgba(255,255,255,0.18)',
+                  background: isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.07)',
+                  color: isActive ? '#5c2483' : '#ffffff'
+                }}
+              >
+                {item.label}
+              </button>
+            );
+          })}
         </div>
 
       </div>
