@@ -91,7 +91,7 @@ const UsersPermissionsSection = ({
             </div>
             <div style={{ flex: '1 1 150px' }}>
               <label style={{ display: 'block', fontSize: '14px', color: '#1a365d', fontWeight: '700', marginBottom: '6px' }}>كلمة المرور (PIN)</label>
-              <input type="password" placeholder="••••••" value={newUser.pin} onChange={e => setNewUser({...newUser, pin: e.target.value})} style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '1px solid #cbd5e1', boxSizing: 'border-box', outline: 'none' }} required />
+              <input type="password" placeholder="•••••" value={newUser.pin} onChange={e => setNewUser({...newUser, pin: e.target.value})} style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '1px solid #cbd5e1', boxSizing: 'border-box', outline: 'none' }} required />
             </div>
           </div>
 
@@ -106,7 +106,7 @@ const UsersPermissionsSection = ({
             </div>
           </div>
 
-          <button type="submit" onMouseEnter={playHover} style={{ background: '#1a365d', color: '#fff', border: 'none', padding: '14px', borderRadius: '14px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', transition: 'background-color 0.2s' }}>حفظ حساب المستخدم الجديد</button>
+          <button type="submit" onMouseEnter={playHover} style={{ background: '#1a365d', color: '#fff', border: 'none', padding: '14px', borderRadius: '14px', fontSize: '16px', fontWeight: '700', cursor: 'pointer' }}>حفظ حساب المستخدم الجديد</button>
         </form>
       </div>
 
@@ -130,3 +130,4 @@ const UsersPermissionsSection = ({
               <tr key={user.id} style={{ borderBottom: '1px solid #f1f5f9', height: '50px' }}>
                 <td style={{ padding: '12px 10px', fontWeight: '600', color: '#334155' }}>{user.name}</td>
                 <td style={{ padding: '12px 10px' }}><span style={{ background: user.role === 'أدمن' ? '#fef3c7' : '#e0f2fe', color: user.role === 'أدمن' ? '#92400e' : '#0369a1', padding: '4px 8px', borderRadius: '8px', fontSize: '13px', fontWeight: '600' }}>{user.role}</span></td>
+                <td style={{ padding: '12px 10px', textAlign: 'center' }}><input type="checkbox" checked={user.permissions?.students || false} onChange={() => handleExistingUserPermissionChange(user.id, 'students')} style={{ width: '16px', height: '16px', accentColor: '#1a365d' }} /></td>
