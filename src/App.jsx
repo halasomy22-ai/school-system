@@ -97,16 +97,16 @@ export default function App() {
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: 'linear-gradient(135deg, #0e1e38 0%, #1a365d 60%, #2b4c7e 100%)', padding: '15px', direction: 'rtl', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
         <form onSubmit={handleLogin} style={{ background: 'rgba(255, 255, 255, 0.06)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', padding: '40px 30px', borderRadius: '28px', border: '1px solid rgba(255, 255, 255, 0.12)', width: '100%', maxWidth: '380px', boxShadow: '0 20px 50px rgba(0,0,0,0.4)' }}>
           
-          {/* حاوية الشعار الرسمي الدائري المطور المربوط برمجياً بالصورة */}
-          <div style={{ width: '85px', height: '85px', background: '#ffffff', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0 auto 20px auto', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.2)', border: '2px solid #f6c23e', overflow: 'hidden' }}>
+          {/* عرض صورة شعار المدرسة الرسمية المرفوعة بدقة وبشكل دائري متناسق */}
+          <div style={{ width: '90px', height: '90px', background: '#ffffff', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0 auto 20px auto', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.25)', border: '2px solid #f6c23e', overflow: 'hidden' }}>
             <img 
-              src="/favicon.svg" 
+              src="/logo.png" 
               alt="شعار مدارس الشروق" 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               onError={(e) => { 
-                // حل بديل في حال لم يجد المتصفح ملف الفايكون يقوم بوضع الإيموجي تلقائياً لمنع ظهور صورة تالفة
+                // حل برميجي بديل يعرض رمز الشمس الذهبي الاحتياطي في حال حدوث أي خطأ بمسار ملف الصورة أو رفعها
                 e.target.style.display = 'none'; 
-                e.target.parentNode.innerHTML = '<span style="font-size:36px">☀️</span>'; 
+                e.target.parentNode.innerHTML = '<span style="font-size:38px">☀️</span>'; 
               }} 
             />
           </div>
