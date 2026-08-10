@@ -34,6 +34,15 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
     setNewUser({ name: '', loginName: '', pin: '', role: 'معلم', permissions: { students: false, classes: false, teachers: false, finance: false, results: false } });
   };
 
+  // دالة حذف المستخدم بعد تأكيد الإجراء
+  const handleDeleteUser = (userId, userName) => {
+    const confirmDelete = window.confirm(`هل أنت متأكد من رغبتك في حذف المستخدم "${userName}" نهائياً من النظام؟`);
+    if (confirmDelete) {
+      setSystemUsers(p => p.filter(u => u.id !== userId));
+      alert("تم حذف المستخدم بنجاح!");
+    }
+  };
+
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', width: '100%', direction: 'rtl', fontFamily: 'system-ui, sans-serif' }}>
       {/* استمارة إضافة مستخدم جديد */}
@@ -60,15 +69,16 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
         </form>
       </div>
 
-      {/* جدول عرض وتعديل الصلاحيات للمستخدمين الحاليين */}
+      {/* جدول عرض وتعديل الصلاحيات للممستخدمين الحاليين */}
       <div style={{ flex: '2 1 450px', background: '#ffffff', padding: '25px', borderRadius: '20px', border: '1px solid #e1e8f0', overflowX: 'auto', boxShadow: '0 8px 20px rgba(0,0,0,0.02)' }}>
         <h3 style={{ color: '#1a365d', margin: '0 0 15px 0', borderBottom: '2px solid #f0f4f8', paddingBottom: '10px', fontWeight: '800' }}>👥 صلاحيات المستخدمين النشطة</h3>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'right', minWidth: '500px' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'right', minWidth: '550px' }}>
           <thead>
             <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc' }}>
               <th style={{ padding: '10px', color: '#1a365d', fontWeight: '700' }}>الاسم</th>
               <th style={{ padding: '10px', color: '#1a365d', fontWeight: '700' }}>الدور</th>
               {['الطلاب', 'الفصول', 'المعلمين', 'الحسابات', 'النتائج'].map(h => <th key={h} style={{ padding: '10px', color: '#1a365d', fontWeight: '700', textAlign: 'center' }}>{h}</th>)}
+              <th style={{ padding: '10px', color: '#e74c3c', fontWeight: '700', textAlign: 'center' }}>إجراء</th>
             </tr>
           </thead>
           <tbody>
@@ -81,6 +91,17 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
                     <input type="checkbox" checked={u.permissions?.[k] || false} onChange={() => handleExistingChange(u.id, k)} style={{ accentColor: '#1a365d' }} />
                   </td>
                 ))}
+                {/* زر الحذف الفوري المضاف */}
+                <td style={{ padding: '10px', textAlign: 'center' }}>
+                  <button 
+                    onClick={() => handleDeleteUser(u.id, u.name)} 
+                    style={{ background: '#fdf2f2', color: '#e74c3c', border: '1px solid #fde8e8', padding: '4px 10px', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' }}
+                    onMouseEnter={(e) => { e.target.style.background = '#fde8e8'; playHover(); }}
+                    onMouseLeave={(e) => e.target.style.background = '#fdf2f2'}
+                  >
+                    🗑️ حذف
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
