@@ -20,8 +20,8 @@ export default function App() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [usersList, setUsersList] = useState([
-    { id: 1, name: "عثمان صديق", loginName: "admin", role: "أدمن", pin: "123", permissions: { students: true, classes: true, teachers: true, finance: true, admin: true } },
-    { id: 2, name: "أستاذ محمد", loginName: "محمد", role: "معلم", pin: "123456", permissions: { students: true, classes: true, teachers: false, finance: false, admin: false } }
+    { id: 1, name: "عثمان صديق", loginName: "admin", role: "أدمن", pin: "123", permissions: { students: true, classes: true, teachers: true, finance: true, results: true } },
+    { id: 2, name: "أستاذ محمد", loginName: "mohamed", role: "معلم", pin: "123456", permissions: { students: true, classes: true, teachers: false, finance: false, results: false } }
   ]);
 
   const playHover = () => { try { const snd = new Audio('https://mixkit.co'); snd.volume = 0.15; snd.play().catch(() => {}); } catch(e){} };
@@ -48,7 +48,7 @@ export default function App() {
                     loginName: loginName,
                     pin: cu.pin || cu.data?.pin ? String(cu.pin || cu.data?.pin) : "",
                     role: cu.role || cu.data?.role || "موظف",
-                    permissions: cu.permissions || cu.data?.permissions || { students: false, classes: false, teachers: false, finance: false, admin: false }
+                    permissions: cu.permissions || cu.data?.permissions || { students: false, classes: false, teachers: false, finance: false, results: false }
                   });
                 }
               }
@@ -97,8 +97,19 @@ export default function App() {
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: 'linear-gradient(135deg, #0e1e38 0%, #1a365d 60%, #2b4c7e 100%)', padding: '15px', direction: 'rtl', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
         <form onSubmit={handleLogin} style={{ background: 'rgba(255, 255, 255, 0.06)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', padding: '40px 30px', borderRadius: '28px', border: '1px solid rgba(255, 255, 255, 0.12)', width: '100%', maxWidth: '380px', boxShadow: '0 20px 50px rgba(0,0,0,0.4)' }}>
           
-          {/* أيقونة الشعار باللون الأصفر الذهبي المتناسق */}
-          <div style={{ width: '70px', height: '70px', background: '#f6c23e', borderRadius: '22px', display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0 auto 20px auto', fontSize: '32px', boxShadow: '0 8px 20px rgba(246, 194, 62, 0.3)' }}>☀️</div>
+          {/* حاوية الشعار الرسمي الدائري المطور المربوط برمجياً بالصورة */}
+          <div style={{ width: '85px', height: '85px', background: '#ffffff', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0 auto 20px auto', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.2)', border: '2px solid #f6c23e', overflow: 'hidden' }}>
+            <img 
+              src="/favicon.svg" 
+              alt="شعار مدارس الشروق" 
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              onError={(e) => { 
+                // حل بديل في حال لم يجد المتصفح ملف الفايكون يقوم بوضع الإيموجي تلقائياً لمنع ظهور صورة تالفة
+                e.target.style.display = 'none'; 
+                e.target.parentNode.innerHTML = '<span style="font-size:36px">☀️</span>'; 
+              }} 
+            />
+          </div>
           
           <h2 style={{ textAlign: 'center', color: '#ffffff', marginBottom: '8px', fontWeight: '800', fontSize: '23px' }}>مدارس الشروق السودانية</h2>
           <p style={{ textAlign: 'center', color: '#f6c23e', fontSize: '13px', marginTop: 0, marginBottom: '30px', fontWeight: '600', letterSpacing: '0.5px' }}>حضانة - ابتدائي - متوسط - ثانوي</p>
@@ -113,7 +124,6 @@ export default function App() {
             <input type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} style={{ width: '100%', padding: '14px 16px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.2)', background: 'rgba(255, 255, 255, 0.06)', color: '#fff', boxSizing: 'border-box', textAlign: 'right', outline: 'none', fontSize: '14px' }} required />
           </div>
           
-          {/* زر دخول بلون الهوية الأصفر والكتابة بالأزرق */}
           <button type="submit" onMouseEnter={playHover} style={{ width: '100%', padding: '14px', background: '#f6c23e', color: '#1a365d', border: 'none', borderRadius: '14px', fontWeight: '700', cursor: 'pointer', fontSize: '16px', boxShadow: '0 8px 25px rgba(246, 194, 62, 0.2)', transition: 'all 0.2s' }}>دخول النظام</button>
           
           <p style={{ textAlign: 'center', color: 'rgba(255, 255, 255, 0.4)', fontSize: '11px', marginTop: '25px', marginBottom: 0 }}>جميع الحقوق محفوظة © مدارس الشروق</p>
