@@ -14,19 +14,27 @@ const DashboardSection = ({
 }) => {
   const [activeTab, setActiveTab] = useState('home');
 
-  const navItems = [
-    { key: 'students', label: 'الطلاب' },
-    { key: 'classes', label: 'الفصول' },
-    { key: 'teachers', label: 'المعلمين' },
-    { key: 'finance', label: 'الحسابات' },
-    { key: 'results', label: 'النتيجة' },
-    { key: 'home', label: 'لوحة التحكم' }
+  // جلب الصلاحيات الفعلية للمستخدم الحالي أو إعطاء صلاحيات كاملة للأدمن كخيار احتياطي
+  const userPermissions = selectedUser?.permissions || { students: true, classes: true, teachers: true, finance: true, results: true };
+
+  // بناء أزرار التنقل وتصفيتها برمجياً بناءً على صلاحيات المستخدم الممررة
+  const allNavItems = [
+    { key: 'students', label: 'الطلاب', permission: userPermissions.students },
+    { key: 'classes', label: 'الفصول', permission: userPermissions.classes },
+    { key: 'teachers', label: 'المعلمين', permission: userPermissions.teachers },
+    { key: 'finance', label: 'الحسابات', permission: userPermissions.finance },
+    { key: 'results', label: 'النتيجة', permission: userPermissions.results },
+    { key: 'home', label: 'لوحة التحكم', permission: true } // متاحة دائماً للجميع
   ];
 
+  // تصفية المصفوفة لتعرض فقط الأقسام المسموح بها
+  const allowedNavItems = allNavItems.filter(item => item.permission === true);
+
   return (
-    <div style={{ width: '100%', minHeight: '100vh', background: '#f8f9fa', fontFamily: 'sans-serif', direction: 'rtl', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ width: '100%', minHeight: '100vh', background: '#f8f9fa', fontFamily: 'system-ui, -apple-system, sans-serif', direction: 'rtl', display: 'flex', flexDirection: 'column' }}>
       
-      <div style={{ background: 'linear-gradient(135deg, #3d145a 0%, #5c2483 100%)', padding: '28px 20px', borderRadius: '0 0 36px 36px', boxShadow: '0 10px 30px rgba(92, 36, 131, 0.18)' }}>
+      {/* تحديث الخلفية العلوية لتتماشى مع ألوان المدرسة الرسمية (الأزرق الداكن) */}
+      <div style={{ background: 'linear-gradient(135deg, #0e1e38 0%, #15345d 100%)', padding: '28px 20px', borderRadius: '0 0 36px 36px', boxShadow: '0 10px 30px rgba(21, 52, 93, 0.15)' }}>
         
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '28px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -34,7 +42,10 @@ const DashboardSection = ({
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             </div>
             <div>
-              <div style={{ color: '#ffffff', fontSize: '22px', fontWeight: '800', marginTop: '2px' }}>مرحباً: عثمان صديق</div>
+              {/* تعديل ذكي: إظهار اسم المستخدم الفعلي الذي قام بالدخول بدلاً من الاسم الثابت */}
+              <div style={{ color: '#ffffff', fontSize: '22px', fontWeight: '800', marginTop: '2px' }}>
+                مرحباً: {selectedUser?.name || "عثمان صديق"}
+              </div>
             </div>
           </div>
           <button onClick={handleLogout} style={{ background: 'rgba(255, 255, 255, 0.1)', color: '#ffffff', border: '1px solid rgba(255, 255, 255, 0.25)', padding: '12px 28px', borderRadius: '16px', cursor: 'pointer', fontWeight: '700', fontSize: '15px' }}>
@@ -42,8 +53,9 @@ const DashboardSection = ({
           </button>
         </div>
 
+        {/* عرض القائمة المفلترة المسموح بدخولها فقط بناء على الصلاحية الحقيقية */}
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: '14px', maxWidth: '1000px', margin: '0 auto' }}>
-          {navItems.map((item) => {
+          {allowedNavItems.map((item) => {
             const isActive = activeTab === item.key;
             return (
               <button
@@ -60,8 +72,10 @@ const DashboardSection = ({
                   cursor: 'pointer',
                   textAlign: 'center',
                   border: isActive ? 'none' : '1px solid rgba(255,255,255,0.18)',
-                  background: isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.07)',
-                  color: isActive ? '#5c2483' : '#ffffff'
+                  background: isActive ? '#f6c23e' : 'rgba(255, 255, 255, 0.07)',
+                  color: isActive ? '#1a365d' : '#ffffff',
+                  boxShadow: isActive ? '0 5px 15px rgba(246, 194, 62, 0.3)' : 'none',
+                  transition: 'all 0.2s'
                 }}
               >
                 {item.label}
@@ -75,25 +89,33 @@ const DashboardSection = ({
       <div style={{ flex: '1 0 auto', maxWidth: '1100px', width: '100%', margin: '40px auto 20px auto', padding: '0 20px', boxSizing: 'border-box' }}>
         {activeTab === 'home' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', width: '100%' }}>
-            <div style={{ width: '100%', borderRadius: '32px', background: 'linear-gradient(135deg, #2b0b42 0%, #3d145a 100%)', padding: '40px', boxSizing: 'border-box', textAlign: 'center', boxShadow: '0 15px 30px rgba(0,0,0,0.1)' }}>
-              <h1 style={{ color: '#ffca28', fontSize: '32px', fontWeight: '900', margin: '0 0 10px 0' }}>مدرسة الشروق السودانية - اسوان</h1>
-              <p style={{ color: '#2ecc71', fontSize: '20px', fontWeight: '700', margin: '0', background: 'rgba(46, 204, 113, 0.1)', padding: '6px 24px', borderRadius: '50px', display: 'inline-block' }}>( ابتدائي - متوسط - ثانوي )</p>
+            {/* تحديث كرت الترحيب بالألوان العصرية للأزرق والأصفر الذهبي إضافة للحضانة */}
+            <div style={{ width: '100%', borderRadius: '32px', background: 'linear-gradient(135deg, #0b192e 0%, #15345d 100%)', padding: '40px', boxSizing: 'border-box', textAlign: 'center', boxShadow: '0 15px 30px rgba(0,0,0,0.1)' }}>
+              <h1 style={{ color: '#f6c23e', fontSize: '32px', fontWeight: '900', margin: '0 0 10px 0', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>مدارس الشروق السودانية - اسوان</h1>
+              <p style={{ color: '#f6c23e', fontSize: '18px', fontWeight: '700', margin: '0', background: 'rgba(246, 194, 62, 0.1)', padding: '6px 24px', borderRadius: '50px', display: 'inline-block' }}>( حضانة - ابتدائي - متوسط - ثانوي )</p>
             </div>
-            <UsersPermissionsSection selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} playHover={playHover} />
+            
+            {/* إظهار قسم تعديل وإضافة الصلاحيات والمستخدمين فقط وحصرياً للأدمن الأساسي للنظام حماية للملفات */}
+            {(selectedUser?.role === 'أدمن' || selectedUser?.loginName === 'admin') && (
+              <UsersPermissionsSection selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} playHover={playHover} />
+            )}
           </div>
         )}
-        {activeTab === 'students' && <StudentsSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
-        {activeTab === 'classes' && <ClassesSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
-        {activeTab === 'teachers' && <TeachersSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
-        {activeTab === 'finance' && <AccountsSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
-        {activeTab === 'results' && <ResultsSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
+        
+        {/* فحص حماية إضافي عند استدعاء الأقسام لمنع التحايل البرمجي */}
+        {activeTab === 'students' && userPermissions.students && <StudentsSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
+        {activeTab === 'classes' && userPermissions.classes && <ClassesSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
+        {activeTab === 'teachers' && userPermissions.teachers && <TeachersSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
+        {activeTab === 'finance' && userPermissions.finance && <AccountsSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
+        {activeTab === 'results' && userPermissions.results && <ResultsSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
       </div>
 
-      <footer style={{ flexShrink: '0', width: '100%', background: '#ffffff', borderTop: '1px solid #eaddf2', padding: '16px 20px', boxSizing: 'border-box', textAlign: 'center' }}>
-        <p style={{ margin: 0, color: '#3d145a', fontSize: '15px', fontWeight: '700', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+      {/* تحديث تذييل الصفحة بالألوان الرسمية المعتمدة */}
+      <footer style={{ flexShrink: '0', width: '100%', background: '#ffffff', borderTop: '1px solid #e1e8f0', padding: '16px 20px', boxSizing: 'border-box', textAlign: 'center' }}>
+        <p style={{ margin: 0, color: '#1a365d', fontSize: '15px', fontWeight: '700', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <span>تم التصميم والتطوير بواسطة:</span>
-          <span style={{ color: '#5c2483', background: '#f4f0f8', padding: '4px 12px', borderRadius: '10px' }}>أستاذ عثمان صديق ( أبو حلا )</span>
-          <span style={{ color: '#7a6687', direction: 'ltr' }}>📞 01149169346</span>
+          <span style={{ color: '#1a365d', background: '#f0f4f8', padding: '4px 12px', borderRadius: '10px' }}>أستاذ عثمان صديق ( أبو حلا )</span>
+          <span style={{ color: '#64748b', direction: 'ltr' }}>📞 01149169346</span>
         </p>
       </footer>
 
