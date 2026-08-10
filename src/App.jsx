@@ -91,48 +91,86 @@ export default function App() {
 
   if (!isLoggedIn) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: 'linear-gradient(135deg, #0e1e38 0%, #1a365d 60%, #2b4c7e 100%)', padding: '15px', direction: 'rtl', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-        <form onSubmit={handleLogin} style={{ background: 'rgba(255, 255, 255, 0.06)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', padding: '40px 30px', borderRadius: '28px', border: '1px solid rgba(255, 255, 255, 0.12)', width: '100%', maxWidth: '380px', boxShadow: '0 20px 50px rgba(0,0,0,0.4)' }}>
+      <div style={{ display: 'flex', minHeight: '100vh', background: '#0e1e38', direction: 'rtl', fontFamily: 'system-ui, -apple-system, sans-serif', flexWrap: 'wrap' }}>
+        
+        {/* الجانب الأيمن: اللوحة التعريفية بالمدرسة وأهدافها */}
+        <div style={{ flex: '1 1 55%', padding: '40px 5%', display: 'flex', flexDirection: 'column', justifyContent: 'between', background: 'linear-gradient(135deg, #09152a 0%, #0e1e38 100%)', color: '#ffffff', boxSizing: 'border-box', minWidth: '320px' }}>
           
-          <div style={{ width: '90px', height: '90px', background: '#ffffff', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0 auto 20px auto', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.25)', border: '2px solid #f6c23e', overflow: 'hidden' }}>
-            <img 
-              src="/logo.png" 
-              alt="شعار مدارس الشروق" 
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              onError={(e) => { 
-                e.target.style.display = 'none'; 
-                e.target.parentNode.innerHTML = '<span style="font-size:38px">☀️</span>'; 
-              }} 
-            />
+          {/* الهيدر العلوي */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
+            <div style={{ width: '80px', height: '80px', background: '#ffffff', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 8px 20px rgba(0,0,0,0.3)', p: '5px', overflow: 'hidden', flexShrink: 0 }}>
+              <img 
+                src="/logo.png" 
+                alt="شعار مدارس الشروق" 
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                onError={(e) => { 
+                  e.target.style.display = 'none'; 
+                  e.target.parentNode.innerHTML = '<span style="font-size:35px">☀️</span>'; 
+                }} 
+              />
+            </div>
+            <div>
+              <h1 style={{ margin: 0, fontSize: '26px', fontWeight: '800', color: '#f6c23e' }}>مدارس الشروق السودانية</h1>
+              <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: '#a0aec0' }}>ريادة التعليم وبناء الأجيال</p>
+            </div>
           </div>
-          
-          <h2 style={{ textAlign: 'center', color: '#ffffff', marginBottom: '8px', fontWeight: '800', fontSize: '23px' }}>مدارس الشروق السودانية</h2>
-          <p style={{ textAlign: 'center', color: '#f6c23e', fontSize: '13px', marginTop: 0, marginBottom: '30px', fontWeight: '600', letterSpacing: '0.5px' }}>حضانة - ابتدائي - متوسط - ثانوي</p>
-          
-          <div style={{ marginBottom: '20px', textAlign: 'right' }}>
-            <label style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '6px', display: 'block', fontWeight: '500' }}>اسم المستخدم</label>
-            <input type="text" placeholder="admin" value={username} onChange={e => setUsername(e.target.value)} style={{ width: '100%', padding: '14px 16px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.2)', background: 'rgba(255, 255, 255, 0.06)', color: '#fff', boxSizing: 'border-box', textAlign: 'right', outline: 'none', fontSize: '14px' }} required />
-          </div>
-          
-          <div style={{ marginBottom: '28px', textAlign: 'right' }}>
-            <label style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '6px', display: 'block', fontWeight: '500' }}>كلمة المرور</label>
-            <input type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} style={{ width: '100%', padding: '14px 16px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.2)', background: 'rgba(255, 255, 255, 0.06)', color: '#fff', boxSizing: 'border-box', textAlign: 'right', outline: 'none', fontSize: '14px' }} required />
-          </div>
-          
-          <button type="submit" style={{ width: '100%', padding: '14px', background: '#f6c23e', color: '#1a365d', border: 'none', borderRadius: '14px', fontWeight: '700', cursor: 'pointer', fontSize: '16px', boxShadow: '0 8px 25px rgba(246, 194, 62, 0.2)', transition: 'all 0.2s' }}>دخول النظام</button>
-          
-          <p style={{ textAlign: 'center', color: 'rgba(255, 255, 255, 0.4)', fontSize: '11px', marginTop: '25px', marginBottom: 0 }}>جميع الحقوق محفوظة © مدارس الشروق</p>
-        </form>
-      </div>
-    );
-  }
 
-  return (
-    <DashboardSection 
-      selectedUser={currentUser} 
-      handlePermissionChange={() => {}} 
-      playHover={playHover} 
-      handleLogout={handleLogout} 
-    />
-  );
-}
+          {/* محتوى من نحن والرسالة والأهداف */}
+          <div style={{ margin: 'auto 0', display: 'flex', flexDirection: 'column', gap: '30px', maxWidth: '650px' }}>
+            <div>
+              <h2 style={{ fontSize: '20px', color: '#4caf50', margin: '0 0 10px 0', fontWeight: '700' }}>من نحن؟</h2>
+              <p style={{ margin: 0, color: '#e2e8f0', lineHeight: '1.7', fontSize: '15px' }}>
+                صرح تعليمي متميز يسعى لتقديم بيئة تربوية ملهمة تواكب أحدث المعايير الأكاديمية لجميع المراحل 
+                <span style={{ color: '#f6c23e', fontWeight: '600' }}> (حضانة - ابتدائي - متوسط - ثانوي)</span>، لتنشئة جيل مبدع ومتمسك بقيمه الأخلاقية.
+              </p>
+            </div>
+
+            <div>
+              <h2 style={{ fontSize: '20px', color: '#4caf50', margin: '0 0 15px 0', fontWeight: '700' }}>أهدافنا الإستراتيجية</h2>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '15px' }}>
+                <div style={{ background: 'rgba(255,255,255,0.04)', padding: '15px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <div style={{ fontSize: '22px', marginBottom: '5px' }}>🎓</div>
+                  <h3 style={{ margin: '0 0 4px 0', fontSize: '15px', color: '#f6c23e', fontWeight: '700' }}>التميز الأكاديمي</h3>
+                  <p style={{ margin: 0, fontSize: '12px', color: '#a0aec0', lineHeight: '1.5' }}>تقديم مناهج قوية ومطورة تنمي التفكير والابتكار.</p>
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.04)', padding: '15px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <div style={{ fontSize: '22px', marginBottom: '5px' }}>🤝</div>
+                  <h3 style={{ margin: '0 0 4px 0', fontSize: '15px', color: '#f6c23e', fontWeight: '700' }}>بناء الشخصية</h3>
+                  <p style={{ margin: 0, fontSize: '12px', color: '#a0aec0', lineHeight: '1.5' }}>غرس القيم الأخلاقية والاعتماد على الذات لدى الطلاب.</p>
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.04)', padding: '15px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <div style={{ fontSize: '22px', marginBottom: '5px' }}>💻</div>
+                  <h3 style={{ margin: '0 0 4px 0', fontSize: '15px', color: '#f6c23e', fontWeight: '700' }}>الدمج التقني</h3>
+                  <p style={{ margin: 0, fontSize: '12px', color: '#a0aec0', lineHeight: '1.5' }}>بيئة رقمية ذكية تسهل تواصل الإدارة والمعلم والطالب.</p>
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.04)', padding: '15px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <div style={{ fontSize: '22px', marginBottom: '5px' }}>🎯</div>
+                  <h3 style={{ margin: '0 0 4px 0', fontSize: '15px', color: '#f6c23e', fontWeight: '700' }}>رعاية المواهب</h3>
+                  <p style={{ margin: 0, fontSize: '12px', color: '#a0aec0', lineHeight: '1.5' }}>اكتشاف المهارات الفردية وتطويرها بأنشطة مكثفة.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* الفوتر السفلي المتكامل لمعلومات التواصل والادارة */}
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '20px', marginTop: '40px', display: 'flex', justifyContent: 'between', flexWrap: 'wrap', gap: '15px', fontSize: '12px', color: '#a0aec0' }}>
+            <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+              <span>📞 <strong style={{ color: '#fff' }}>الهاتف:</strong> 01116874770</span>
+              <span>✉️ <strong style={{ color: '#fff' }}>البريد:</strong> lumyaa@cush.digital</span>
+            </div>
+            <div>
+              <span>جميع الحقوق محفوظة © مدارس الشروق السودانية</span>
+            </div>
+          </div>
+
+        </div>
+
+        {/* الجانب الأيسر: صندوق ونموذج تسجيل الدخول النظيف والعصري */}
+        <div style={{ flex: '1 1 45%', background: '#ffffff', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '40px 20px', boxSizing: 'border-box', minWidth: '320px', borderRight: '1px solid rgba(0,0,0,0.05)' }}>
+          <form onSubmit={handleLogin} style={{ width: '100%', maxWidth: '380px' }}>
+            
+            <div style={{ marginBottom: '35px' }}>
+              <h2 style={{ color: '#0e1e38', margin: '0 0 6px 0', fontWeight: '800', fontSize: '24px' }}>بوابة تسجيل الدخول</h2>
+              <p style={{ color: '#718096', margin: 0, fontSize: '13px' }}>مرحباً بك مجدداً في نظام المدرسة الإلكتروني</p>
+            </div>
+            
