@@ -32,7 +32,6 @@ export default function App() {
     if (isLoggedIn) localStorage.setItem('school_activeTab', activeTab);
   }, [activeTab, isLoggedIn]);
 
-  // جلب المستخدمين فورياً ومباشرة للتأكد من التعرف على الحساب الجديد المرفوع لـ Supabase
   const loadUsersFromCloud = async () => {
     try {
       const cloudUsers = await getAllSystemUsers();
@@ -52,7 +51,6 @@ export default function App() {
     e.preventDefault();
     playClick();
 
-    // تحديث القائمة قبل فحص كلمة السر لضمان قراءة المستخدم الجديد مباشرة من السحابة
     try {
       const cloudUsers = await getAllSystemUsers();
       const currentPool = (cloudUsers && cloudUsers.length > 0) ? cloudUsers : usersList;
@@ -91,14 +89,14 @@ export default function App() {
 
   if (!isLoggedIn) {
     return (
-      <div style={{ display: 'flex', minHeight: '100vh', background: '#0e1e38', direction: 'rtl', fontFamily: 'system-ui, -apple-system, sans-serif', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex !important', display: 'flex', minHeight: '100vh', width: '100vw', background: '#0e1e38', direction: 'rtl', fontFamily: 'system-ui, -apple-system, sans-serif', flexWrap: 'wrap', margin: 0, padding: 0, boxSizing: 'border-box' }}>
         
         {/* الجانب الأيمن: اللوحة التعريفية بالمدرسة وأهدافها */}
-        <div style={{ flex: '1 1 55%', padding: '40px 5%', display: 'flex', flexDirection: 'column', justifyContent: 'between', background: 'linear-gradient(135deg, #09152a 0%, #0e1e38 100%)', color: '#ffffff', boxSizing: 'border-box', minWidth: '320px' }}>
+        <div style={{ flex: '1 1 55%', padding: '40px 5%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'linear-gradient(135deg, #09152a 0%, #0e1e38 100%)', color: '#ffffff', boxSizing: 'border-box', minWidth: '320px' }}>
           
           {/* الهيدر العلوي */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
-            <div style={{ width: '80px', height: '80px', background: '#ffffff', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 8px 20px rgba(0,0,0,0.3)', p: '5px', overflow: 'hidden', flexShrink: 0 }}>
+            <div style={{ width: '80px', height: '80px', background: '#ffffff', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 8px 20px rgba(0,0,0,0.3)', padding: '5px', overflow: 'hidden', flexShrink: 0, boxSizing: 'border-box' }}>
               <img 
                 src="/logo.png" 
                 alt="شعار مدارس الشروق" 
@@ -153,7 +151,7 @@ export default function App() {
           </div>
 
           {/* الفوتر السفلي المتكامل لمعلومات التواصل والادارة */}
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '20px', marginTop: '40px', display: 'flex', justifyContent: 'between', flexWrap: 'wrap', gap: '15px', fontSize: '12px', color: '#a0aec0' }}>
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '20px', marginTop: '40px', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '15px', fontSize: '12px', color: '#a0aec0' }}>
             <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
               <span>📞 <strong style={{ color: '#fff' }}>الهاتف:</strong> 01116874770</span>
               <span>✉️ <strong style={{ color: '#fff' }}>البريد:</strong> lumyaa@cush.digital</span>
@@ -174,3 +172,4 @@ export default function App() {
               <p style={{ color: '#718096', margin: 0, fontSize: '13px' }}>مرحباً بك مجدداً في نظام المدرسة الإلكتروني</p>
             </div>
             
+            <div style={{ marginBottom: '20px', textAlign: 'right' }}>
