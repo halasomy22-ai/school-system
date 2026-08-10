@@ -12,6 +12,8 @@ export default function App() {
   const [activeTab, setActiveTab] = useState(() => localStorage.getItem('school_activeTab') || 'empty');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false); // حالة لإخفاء الزر أثناء المعالجة
+  
   const [usersList, setUsersList] = useState([
     { id: 1, name: "عثمان صديق", loginName: "admin", role: "osman", pin: "198234", permissions: { students: true, classes: true, teachers: true, finance: true, results: true } }
   ]);
@@ -34,10 +36,13 @@ export default function App() {
   const handleLogin = async (e) => {
     e.preventDefault();
     playClick();
+    setIsSubmitting(true); // إخفاء الزر فوراً عند الضغط وبدء المعالجة
+
     try {
       const cloudUsers = await getAllSystemUsers();
       const currentPool = (cloudUsers && cloudUsers.length > 0) ? cloudUsers : usersList;
       const foundUser = currentPool.find(u => u && String(u.loginName || '').trim().toLowerCase() === username.trim().toLowerCase() && String(u.pin || '').trim() === password.trim());
+      
       if (foundUser) {
         setCurrentUser(foundUser);
         setIsLoggedIn(true);
@@ -45,8 +50,14 @@ export default function App() {
         localStorage.setItem('school_isLoggedIn', 'true');
         localStorage.setItem('school_currentUser', JSON.stringify(foundUser));
         localStorage.setItem('school_activeTab', 'empty');
-      } else { alert("بيانات الدخول غير صحيحة!"); }
-    } catch (err) { alert("خطأ في الاتصال بقاعدة البيانات السحابية!"); }
+      } else { 
+        alert("بيانات الدخول غير صحيحة!"); 
+        setIsSubmitting(false); // إعادة إظهار الزر إذا كانت البيانات خاطئة لمحاولة أخرى
+      }
+    } catch (err) { 
+      alert("خطأ في الاتصال بقاعدة البيانات السحابية!"); 
+      setIsSubmitting(false); // إعادة إظهار الزر في حال حدوث خطأ شبكة
+    }
   };
 
   const handleLogout = () => {
@@ -66,73 +77,94 @@ export default function App() {
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', width: '100%', background: '#0e1e38', direction: 'rtl', fontFamily: 'system-ui, sans-serif', flexWrap: 'wrap', margin: 0, padding: 0, boxSizing: 'border-box' }}>
-      <div style={{ flex: '1 1 55%', padding: '40px 5%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'linear-gradient(135deg, #09152a 0%, #0e1e38 100%)', color: '#ffffff', boxSizing: 'border-box', minWidth: '320px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
-          <div style={{ width: '80px', height: '80px', background: '#ffffff', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 8px 20px rgba(0,0,0,0.3)', padding: '5px', overflow: 'hidden', flexShrink: 0, boxSizing: 'border-box' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%', background: '#1a365d', direction: 'rtl', fontFamily: 'system-ui, sans-serif', margin: 0, padding: 0, boxSizing: 'border-box' }}>
+      
+      {/* الشريط العلوي المشترك: الشعار على اليمين ونموذج تسجيل الدخول على الشمال */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 5%', background: '#112240', borderBottom: '1px solid rgba(255,255,255,0.08)', flexWrap: 'wrap', gap: '20px' }}>
+        
+        {/* الشعار والاسم على اليمين */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <div style={{ width: '65px', height: '65px', background: '#ffffff', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 4px 15px rgba(0,0,0,0.2)', padding: '5px', overflow: 'hidden', boxSizing: 'border-box' }}>
             <img src="/logo.png" alt="شعار مدارس الشروق" style={{ width: '100%', height: '100%', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; e.target.parentNode.innerHTML = '☀️'; }} />
           </div>
           <div>
-            <h1 style={{ margin: 0, fontSize: '26px', fontWeight: '800', color: '#f6c23e' }}>مدارس الشروق السودانية</h1>
-            <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: '#a0aec0' }}>ريادة التعليم وبناء الأجيال</p>
+            <h1 style={{ margin: 0, fontSize: '22px', fontWeight: '800', color: '#f6c23e' }}>مدارس الشروق السودانية</h1>
+            <p style={{ margin: '2px 0 0 0', fontSize: '12px', color: '#a0aec0' }}>ريادة التعليم وبناء الأجيال</p>
           </div>
         </div>
-        <div style={{ margin: 'auto 0', display: 'flex', flexDirection: 'column', gap: '30px', maxWidth: '650px' }}>
+
+        {/* نموذج تسجيل الدخول مدمج ومختصر على الشمال بدون إضافات */}
+        <form onSubmit={handleLogin} style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          <input 
+            type="text" 
+            placeholder="اسم المستخدم" 
+            value={username} 
+            onChange={e => setUsername(e.target.value)} 
+            style={{ padding: '10px 14px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.06)', color: '#fff', outline: 'none', fontSize: '13px', width: '140px', textAlign: 'right' }} 
+            required 
+          />
+          <input 
+            type="password" 
+            placeholder="كلمة المرور" 
+            value={password} 
+            onChange={e => setPassword(e.target.value)} 
+            style={{ padding: '10px 14px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.06)', color: '#fff', outline: 'none', fontSize: '13px', width: '140px', textAlign: 'right' }} 
+            required 
+          />
+          
+          {/* يختفي الزر تماماً أثناء المعالجة ويظهر بدلاً منه نص الانتظار */}
+          {!isSubmitting ? (
+            <button type="submit" style={{ padding: '10px 20px', background: '#f6c23e', color: '#0e1e38', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer', fontSize: '13px', boxShadow: '0 4px 12px rgba(246, 194, 62, 0.2)' }}>
+              تسجيل الدخول
+            </button>
+          ) : (
+            <span style={{ fontSize: '13px', color: '#a0aec0', fontWeight: '600', padding: '10px' }}>
+              جاري التحقق...
+            </span>
+          )}
+        </form>
+
+      </div>
+
+      {/* المحتوى الرئيسي للتعريف والأهداف بالخلفية الجديدة الزرقاء المتناسقة */}
+      <div style={{ flex: 1, padding: '50px 5%', display: 'flex', flexDirection: 'column', justifyContent: 'center', background: 'linear-gradient(135deg, #162a45 0%, #1a365d 100%)', color: '#ffffff', boxSizing: 'border-box' }}>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '40px', maxWidth: '900px', margin: '0 auto', width: '100%' }}>
           <div>
-            <h2 style={{ fontSize: '20px', color: '#4caf50', margin: '0 0 10px 0', fontWeight: '700' }}>من نحن؟</h2>
-            <p style={{ margin: 0, color: '#e2e8f0', lineHeight: '1.7', fontSize: '15px' }}>صرح تعليمي متميز يسعى لتقديم بيئة تربوية ملهمة تواكب أحدث المعايير الأكاديمية لجميع المراحل <span style={{ color: '#f6c23e', fontWeight: '600' }}>(حضانة - ابتدائي - متوسط - ثانوي)</span>، لتنشئة جيل مبدع ومتمسك بقيمه الأخلاقية.</p>
+            <h2 style={{ fontSize: '22px', color: '#4caf50', margin: '0 0 12px 0', fontWeight: '700' }}>من نحن؟</h2>
+            <p style={{ margin: 0, color: '#e2e8f0', lineHeight: '1.8', fontSize: '16px' }}>
+              صرح تعليمي متميز يسعى لتقديم بيئة تربوية ملهمة تواكب أحدث المعايير الأكاديمية لجميع المراحل 
+              <span style={{ color: '#f6c23e', fontWeight: '600' }}> (حضانة - ابتدائي - متوسط - ثانوي)</span>، لتنشئة جيل مبدع ومتمسك بقيمه الأخلاقية.
+            </p>
           </div>
+
           <div>
-            <h2 style={{ fontSize: '20px', color: '#4caf50', margin: '0 0 15px 0', fontWeight: '700' }}>أهدافنا الإستراتيجية</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '15px' }}>
-              <div style={{ background: 'rgba(255,255,255,0.04)', padding: '15px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                <div style={{ fontSize: '22px', marginBottom: '5px' }}>🎓</div>
-                <h3 style={{ margin: '0 0 4px 0', fontSize: '15px', color: '#f6c23e', fontWeight: '700' }}>التميز الأكاديمي</h3>
-                <p style={{ margin: 0, fontSize: '12px', color: '#a0aec0' }}>تقديم مناهج قوية ومطورة تنمي التفكير والابتكار.</p>
+            <h2 style={{ fontSize: '22px', color: '#4caf50', margin: '0 0 20px 0', fontWeight: '700' }}>أهدافنا الإستراتيجية</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
+              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '20px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ fontSize: '24px', marginBottom: '8px' }}>🎓</div>
+                <h3 style={{ margin: '0 0 6px 0', fontSize: '16px', color: '#f6c23e', fontWeight: '700' }}>التميز الأكاديمي</h3>
+                <p style={{ margin: 0, fontSize: '13px', color: '#cbd5e0', lineHeight: '1.5' }}>تقديم مناهج قوية ومطورة تنمي التفكير والابتكار.</p>
               </div>
-              <div style={{ background: 'rgba(255,255,255,0.04)', padding: '15px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                <div style={{ fontSize: '22px', marginBottom: '5px' }}>🤝</div>
-                <h3 style={{ margin: '0 0 4px 0', fontSize: '15px', color: '#f6c23e', fontWeight: '700' }}>بناء الشخصية</h3>
-                <p style={{ margin: 0, fontSize: '12px', color: '#a0aec0' }}>غرس القيم الأخلاقية والاعتماد على الذات لدى الطلاب.</p>
+              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '20px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ fontSize: '24px', marginBottom: '8px' }}>🤝</div>
+                <h3 style={{ margin: '0 0 6px 0', fontSize: '16px', color: '#f6c23e', fontWeight: '700' }}>بناء الشخصية</h3>
+                <p style={{ margin: 0, fontSize: '13px', color: '#cbd5e0', lineHeight: '1.5' }}>غرس القيم الأخلاقية والاعتماد على الذات لدى الطلاب.</p>
               </div>
-              <div style={{ background: 'rgba(255,255,255,0.04)', padding: '15px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                <div style={{ fontSize: '22px', marginBottom: '5px' }}>💻</div>
-                <h3 style={{ margin: '0 0 4px 0', fontSize: '15px', color: '#f6c23e', fontWeight: '700' }}>الدمج التقني</h3>
-                <p style={{ margin: 0, fontSize: '12px', color: '#a0aec0' }}>بيئة رقمية ذكية تسهل تواصل الإدارة والمعلم والطالب.</p>
+              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '20px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ fontSize: '24px', marginBottom: '8px' }}>💻</div>
+                <h3 style={{ margin: '0 0 6px 0', fontSize: '16px', color: '#f6c23e', fontWeight: '700' }}>الدمج التقني</h3>
+                <p style={{ margin: 0, fontSize: '13px', color: '#cbd5e0', lineHeight: '1.5' }}>بيئة رقمية ذكية تسهل تواصل الإدارة والمعلم والطالب.</p>
               </div>
-              <div style={{ background: 'rgba(255,255,255,0.04)', padding: '15px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                <div style={{ fontSize: '22px', marginBottom: '5px' }}>🎯</div>
-                <h3 style={{ margin: '0 0 4px 0', fontSize: '15px', color: '#f6c23e', fontWeight: '700' }}>رعاية المواهب</h3>
-                <p style={{ margin: 0, fontSize: '12px', color: '#a0aec0' }}>اكتشاف المهارات الفردية وتطويرها بأنشطة مكثفة.</p>
+              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '20px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ fontSize: '24px', marginBottom: '8px' }}>🎯</div>
+                <h3 style={{ margin: '0 0 6px 0', fontSize: '16px', color: '#f6c23e', fontWeight: '700' }}>رعاية المواهب</h3>
+                <p style={{ margin: 0, fontSize: '13px', color: '#cbd5e0', lineHeight: '1.5' }}>اكتشاف المهارات الفردية وتطويرها بأنشطة مكثفة.</p>
               </div>
             </div>
           </div>
         </div>
-        <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '20px', marginTop: '40px', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '15px', fontSize: '12px', color: '#a0aec0' }}>
-          <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-            <span>📞 <strong style={{ color: '#fff' }}>الهاتف:</strong> 01116874770</span>
-            <span>✉️ <strong style={{ color: '#fff' }}>البريد:</strong> lumyaa@cush.digital</span>
-          </div>
-          <div><span>جميع الحقوق محفوظة © مدارس الشروق السودانية</span></div>
-        </div>
+
       </div>
-      <div style={{ flex: '1 1 45%', background: '#ffffff', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '40px 20px', boxSizing: 'border-box', minWidth: '320px', borderRight: '1px solid rgba(0,0,0,0.05)' }}>
-        <form onSubmit={handleLogin} style={{ width: '100%', maxWidth: '380px' }}>
-          <div style={{ marginBottom: '35px' }}>
-            <h2 style={{ color: '#0e1e38', margin: '0 0 6px 0', fontWeight: '800', fontSize: '24px' }}>بوابة تسجيل الدخول</h2>
-            <p style={{ color: '#718096', margin: 0, fontSize: '13px' }}>مرحباً بك مجدداً في نظام المدرسة الإلكتروني</p>
-          </div>
-          <div style={{ marginBottom: '20px', textAlign: 'right' }}>
-            <label style={{ fontSize: '13px', color: '#4a5568', marginBottom: '6px', display: 'block', fontWeight: '600' }}>اسم المستخدم</label>
-            <input type="text" placeholder="admin" value={username} onChange={e => setUsername(e.target.value)} style={{ width: '100%', padding: '14px 16px', borderRadius: '12px', border: '1px solid #cbd5e0', background: '#f7fafc', color: '#1a202c', boxSizing: 'border-box', textAlign: 'right', outline: 'none', fontSize: '14px' }} required />
-          </div>
-          <div style={{ marginBottom: '28px', textAlign: 'right' }}>
-            <label style={{ fontSize: '13px', color: '#4a5568', marginBottom: '6px', display: 'block', fontWeight: '600' }}>كلمة المرور</label>
-            <input type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} style={{ width: '100%', padding: '14px 16px', borderRadius: '12px', border: '1px solid #cbd5e0', background: '#f7fafc', color: '#1a202c', boxSizing: 'border-box', textAlign: 'right', outline: 'none', fontSize: '14px' }} required />
-          </div>
-          <button type="submit" style={{ width: '100%', padding: '14px', background: '#f6c23e', color: '#0e1e38', border: 'none', borderRadius: '12px', fontWeight: '700', cursor: 'pointer', fontSize: '15px', boxShadow: '0 6px 20px rgba(246, 194, 62, 0.3)' }}>دخول النظام</button>
-        </form>
-      </div>
-    </div>
-  );
-}
+
+      {/* الفوتر السفلي المتكامل لمعلومات التواصل والإدارة */}
