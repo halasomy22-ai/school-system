@@ -28,7 +28,7 @@ export default function App() {
     } catch (err) { alert("خطأ في الاتصال!"); setIsSubmitting(false); }
   };
 
-  if (isLoggedIn) return <DashboardSection selectedUser={currentUser} handlePermissionChange={() => {}} playHover={() => {}} handleLogout={() => { setIsLoggedIn(false); localStorage.clear(); }} />;
+  if (isLoggedIn) return <DashboardSection selectedUser={currentUser} handlePermissionChange={() => {}} playHover={() => {}} handleLogout={handleLogout} />;
 
   return (
     <div className="shorouk-container">
@@ -37,7 +37,7 @@ export default function App() {
           <div className="shorouk-logo-wrapper">
             <img src="/logo.png" alt="logo" onError={(e) => { e.target.style.display = 'none'; e.target.parentNode.innerHTML = '☀️'; }} />
           </div>
-          <div>
+          <div className="shorouk-title-wrapper">
             <h1>مدارس الشروق السودانية</h1>
             <p>ريادة التعليم وبناء الأجيال</p>
           </div>
@@ -45,7 +45,7 @@ export default function App() {
         <form onSubmit={handleLogin} className="shorouk-login-form">
           <input type="text" placeholder="اسم المستخدم" value={username} onChange={e => setUsername(e.target.value)} required />
           <input type="password" placeholder="كلمة المرور" value={password} onChange={e => setPassword(e.target.value)} required />
-          {!isSubmitting ? <button type="submit">تسجيل الدخول</button> : <span>جاري التحقق...</span>}
+          {!isSubmitting ? <button type="submit">تسجيل الدخول</button> : <span className="shorouk-checking">جاري التحقق...</span>}
         </form>
       </div>
 
@@ -57,7 +57,7 @@ export default function App() {
 
         <div className="shorouk-section">
           <h2>مجلس الإدارة الموقر</h2>
-          <div className="shorouk-grid grid-4">
+          <div className="shorouk-grid grid-admin">
             <div className="admin-card"><span>المدير العام</span><strong>أستاذ كمال الدين المجذوب</strong></div>
             <div className="admin-card"><span>نائب المدير العام</span><strong>ماما هند عبد الرازق</strong></div>
             <div className="admin-card"><span>الهيئة الإدارية</span><strong>الأستاذة لينا كمال المجذوب</strong></div>
@@ -67,7 +67,7 @@ export default function App() {
 
         <div className="shorouk-section">
           <h2>أهدافنا الإستراتيجية</h2>
-          <div className="shorouk-grid grid-4">
+          <div className="shorouk-grid grid-goals">
             <div className="goal-card"><div>🎓</div><h3>التميز الأكاديمي</h3><p>تقديم مناهج قوية ومطورة تنمي التفكير والابتكار.</p></div>
             <div className="goal-card"><div>🤝</div><h3>بناء الشخصية</h3><p>غرس القيم الأخلاقية والاعتماد على الذات لدى الطلاب.</p></div>
             <div className="goal-card"><div>💻</div><h3>الدمج التقني</h3><p>بيئة رقمية ذكية تسهل تواصل الإدارة والمعلم والطالب.</p></div>
@@ -81,7 +81,9 @@ export default function App() {
           <span>📞 <strong>الهاتف:</strong> 01116874770</span>
           <span>✉️ <strong>البريد:</strong> lumyaa@cush.digital</span>
         </div>
-        <div><span>جميع الحقوق محفوظة © مدرسة الشروق (أبو حلا) 01149169346</span></div>
+        <div className="footer-rights">
+          <span>جميع الحقوق محفوظة © مدرسة الشروق (أبو حلا) 01149169346</span>
+        </div>
       </div>
     </div>
   );
