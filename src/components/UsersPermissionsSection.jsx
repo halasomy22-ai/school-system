@@ -1,51 +1,107 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getAllSystemUsers, addSystemUser, deleteSystemUser } from '../db'; 
 
 export default function UsersPermissionsSection({ handlePermissionChange = () => {}, playHover = () => {} }) {
-  const [systemUsers, setSystemUsers] = useState([
-    { id: 1, name: "عثمان صديق", loginName: "admin", role: "أدمن", pin: "123", permissions: { students: true, classes: true, teachers: true, finance: true, results: true } },
-    { id: 2, name: "أستاذ محمد", loginName: "mohamed", role: "معلم", pin: "123456", permissions: { students: true, classes: true, teachers: false, finance: false, results: false } }
-  ]);
+  const [systemUsers, setSystemUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [newUser, setNewUser] = useState({
     name: '', loginName: '', pin: '', role: 'معلم',
     permissions: { students: false, classes: false, teachers: false, finance: false, results: false }
   });
 
+  const fetchCloudUsers = async () => {
+    try {
+      setLoading(true);
+      const cloudUsers = await getAllSystemUsers();
+      
+      // وضع حسابات افتراضية أساسية في حال كانت القاعدة السحابية فارغة تماماً
+      const defaultUsers = [
+        { id: '1', name: "عثمان صديق", loginName: "admin", role: "أدمن", pin: "123", permissions: { students: true, classes: true, teachers: true, finance: true, results: true } },
+        { id: '2', name: "أستاذ محمد", loginName: "mohamed", role: "معلم", pin: "123456", permissions: { students: true, classes: true, teachers: false, finance: false, results: false } }
+      ];
+
+      if (cloudUsers && cloudUsers.length > 0) {
+        setSystemUsers(cloudUsers);
+      } else {
+        setSystemUsers(defaultUsers);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCloudUsers();
+  }, []);
+
   const handleCheckboxChange = (key) => {
     setNewUser(p => ({ ...p, permissions: { ...p.permissions, [key]: !p.permissions[key] } }));
   };
 
-  const handleExistingChange = (userId, key) => {
-    setSystemUsers(p => p.map(u => {
+  const handleExistingChange = async (userId, key) => {
+    const updatedUsers = systemUsers.map(u => {
       if (u.id === userId) {
-        const updated = { ...u.permissions, [key]: !u.permissions[key] };
-        handlePermissionChange(userId, updated);
-        return { ...u, permissions: updated };
+        const updatedPermissions = { ...u.permissions, [key]: !u.permissions[key] };
+        const updatedUserObj = { ...u, permissions: updatedPermissions };
+        // رفع تعديل الصلاحيات الحالي لـ Supabase فوراً
+        addSystemUser(updatedUserObj);
+        handlePermissionChange(userId, updatedPermissions);
+        return updatedUserObj;
       }
       return u;
-    }));
+    });
+    setSystemUsers(updatedUsers);
   };
 
-  const saveNewUser = (e) => {
+  const saveNewUser = async (e) => {
     e.preventDefault();
     if (!newUser.name || !newUser.loginName || !newUser.pin) return alert("الرجاء ملء حقول البيانات!");
-    setSystemUsers(p => [...p, { ...newUser, id: Date.now(), loginName: newUser.loginName.trim().toLowerCase() }]);
-    alert(`تم إضافة ${newUser.role} بنجاح!`);
-    setNewUser({ name: '', loginName: '', pin: '', role: 'معلم', permissions: { students: false, classes: false, teachers: false, finance: false, results: false } });
+    
+    const loginClean = newUser.loginName.trim().toLowerCase();
+    
+    if (systemUsers.some(u => String(u.loginName).toLowerCase() === loginClean)) {
+      return alert("اسم المستخدم مكرر في قاعدة البيانات السحابية!");
+    }
+
+    const accountCreated = { 
+      id: String(Date.now()), 
+      name: newUser.name,
+      loginName: loginClean,
+      pin: String(newUser.pin),
+      role: newUser.role,
+      permissions: newUser.permissions
+    };
+
+    try {
+      await addSystemUser(accountCreated);
+      alert(`تم رفع حساب ${newUser.role} بنجاح إلى قاعدة Supabase السحابية!`);
+      await fetchCloudUsers();
+      setNewUser({ name: '', loginName: '', pin: '', role: 'معلم', permissions: { students: false, classes: false, teachers: false, finance: false, results: false } });
+    } catch (err) {
+      alert("فشل رفع البيانات للسحابة");
+    }
   };
 
-  // دالة حذف المستخدم بعد تأكيد الإجراء
-  const handleDeleteUser = (userId, userName) => {
-    const confirmDelete = window.confirm(`هل أنت متأكد من رغبتك في حذف المستخدم "${userName}" نهائياً من النظام؟`);
+  const handleDeleteUser = async (userId, userName) => {
+    if (userId === '1' || userId === 1) return alert("لا يمكن حذف حساب الأدمن الأساسي!");
+    const confirmDelete = window.confirm(`هل أنت متأكد من حذف المستخدم "${userName}" نهائياً من السحابة؟`);
     if (confirmDelete) {
-      setSystemUsers(p => p.filter(u => u.id !== userId));
-      alert("تم حذف المستخدم بنجاح!");
+      try {
+        await deleteSystemUser(userId);
+        alert("تم حذف المستخدم بنجاح من السحابة!");
+        await fetchCloudUsers();
+      } catch (err) {
+        alert("حدث خطأ أثناء الحذف");
+      }
     }
   };
 
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', width: '100%', direction: 'rtl', fontFamily: 'system-ui, sans-serif' }}>
-      {/* استمارة إضافة مستخدم جديد */}
+      {/* استمارة الإضافة */}
       <div style={{ flex: '1 1 350px', background: '#ffffff', padding: '25px', borderRadius: '20px', border: '1px solid #e1e8f0', boxShadow: '0 8px 20px rgba(0,0,0,0.02)' }}>
         <h3 style={{ color: '#1a365d', margin: '0 0 15px 0', borderBottom: '2px solid #f0f4f8', paddingBottom: '10px', fontWeight: '800' }}>➕ إضافة مستخدم وتعيين الصلاحيات</h3>
         <form onSubmit={saveNewUser} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -65,47 +121,50 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
               </label>
             ))}
           </div>
-          <button type="submit" onMouseEnter={playHover} style={{ background: '#1a365d', color: '#fff', border: 'none', padding: '12px', borderRadius: '10px', fontSize: '15px', fontWeight: '700', cursor: 'pointer' }}>حفظ المستخدم الجديد</button>
+          <button type="submit" style={{ background: '#1a365d', color: '#fff', border: 'none', padding: '12px', borderRadius: '10px', fontSize: '15px', fontWeight: '700', cursor: 'pointer' }}>حفظ ورفع للسحابة</button>
         </form>
       </div>
 
-      {/* جدول عرض وتعديل الصلاحيات للممستخدمين الحاليين */}
+      {/* جدول عرض وتعديل الصلاحيات وحذف المستخدمين سحابياً */}
       <div style={{ flex: '2 1 450px', background: '#ffffff', padding: '25px', borderRadius: '20px', border: '1px solid #e1e8f0', overflowX: 'auto', boxShadow: '0 8px 20px rgba(0,0,0,0.02)' }}>
-        <h3 style={{ color: '#1a365d', margin: '0 0 15px 0', borderBottom: '2px solid #f0f4f8', paddingBottom: '10px', fontWeight: '800' }}>👥 صلاحيات المستخدمين النشطة</h3>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'right', minWidth: '550px' }}>
-          <thead>
-            <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc' }}>
-              <th style={{ padding: '10px', color: '#1a365d', fontWeight: '700' }}>الاسم</th>
-              <th style={{ padding: '10px', color: '#1a365d', fontWeight: '700' }}>الدور</th>
-              {['الطلاب', 'الفصول', 'المعلمين', 'الحسابات', 'النتائج'].map(h => <th key={h} style={{ padding: '10px', color: '#1a365d', fontWeight: '700', textAlign: 'center' }}>{h}</th>)}
-              <th style={{ padding: '10px', color: '#e74c3c', fontWeight: '700', textAlign: 'center' }}>إجراء</th>
-            </tr>
-          </thead>
-          <tbody>
-            {systemUsers.map(u => (
-              <tr key={u.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                <td style={{ padding: '10px', fontWeight: '600', color: '#334155' }}>{u.name}</td>
-                <td style={{ padding: '10px' }}><span style={{ background: u.role === 'أدمن' ? '#fef3c7' : '#e0f2fe', color: u.role === 'أدمن' ? '#92400e' : '#0369a1', padding: '3px 6px', borderRadius: '6px', fontSize: '12px', fontWeight: '600' }}>{u.role}</span></td>
-                {['students', 'classes', 'teachers', 'finance', 'results'].map(k => (
-                  <td key={k} style={{ padding: '10px', textAlign: 'center' }}>
-                    <input type="checkbox" checked={u.permissions?.[k] || false} onChange={() => handleExistingChange(u.id, k)} style={{ accentColor: '#1a365d' }} />
-                  </td>
-                ))}
-                {/* زر الحذف الفوري المضاف */}
-                <td style={{ padding: '10px', textAlign: 'center' }}>
-                  <button 
-                    onClick={() => handleDeleteUser(u.id, u.name)} 
-                    style={{ background: '#fdf2f2', color: '#e74c3c', border: '1px solid #fde8e8', padding: '4px 10px', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' }}
-                    onMouseEnter={(e) => { e.target.style.background = '#fde8e8'; playHover(); }}
-                    onMouseLeave={(e) => e.target.style.background = '#fdf2f2'}
-                  >
-                    🗑️ حذف
-                  </button>
-                </td>
+        <h3 style={{ color: '#1a365d', margin: '0 0 15px 0', borderBottom: '2px solid #f0f4f8', paddingBottom: '10px', fontWeight: '800' }}>👥 صلاحيات الحسابات السحابية (Supabase)</h3>
+        {loading ? (
+          <p style={{ textAlign: 'center', color: '#1a365d', fontWeight: '600' }}>جاري جلب البيانات من السحابة...</p>
+        ) : (
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'right', minWidth: '500px' }}>
+            <thead>
+              <tr style={{ borderBottom: '2px solid #cbd5e1', background: '#f8fafc' }}>
+                <th style={{ padding: '10px', color: '#1a365d', fontWeight: '700' }}>الاسم</th>
+                <th style={{ padding: '10px', color: '#1a365d', fontWeight: '700' }}>الدور</th>
+                {['الطلاب', 'الفصول', 'المعلمين', 'الحسابات', 'النتائج'].map(h => <th key={h} style={{ padding: '10px', color: '#1a365d', fontWeight: '700', textAlign: 'center' }}>{h}</th>)}
+                <th style={{ padding: '10px', color: '#e74c3c', fontWeight: '700', textAlign: 'center' }}>إجراء</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {systemUsers.map(u => (
+                <tr key={u.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                  <td style={{ padding: '10px', fontWeight: '600', color: '#334155' }}>{u.name}</td>
+                  <td style={{ padding: '10px' }}><span style={{ background: u.role === 'أدمن' ? '#fef3c7' : '#e0f2fe', color: u.role === 'أدمن' ? '#92400e' : '#0369a1', padding: '3px 6px', borderRadius: '6px', fontSize: '12px', fontWeight: '600' }}>{u.role}</span></td>
+                  {['students', 'classes', 'teachers', 'finance', 'results'].map(k => (
+                    <td key={k} style={{ padding: '10px', textAlign: 'center' }}>
+                      <input type="checkbox" checked={u.permissions?.[k] || false} onChange={() => handleExistingChange(u.id, k)} style={{ accentColor: '#1a365d' }} />
+                    </td>
+                  ))}
+                  <td style={{ padding: '10px', textAlign: 'center' }}>
+                    <button 
+                      onClick={() => handleDeleteUser(u.id, u.name)} 
+                      style={{ background: '#fdf2f2', color: '#e74c3c', border: '1px solid #fde8e8', padding: '4px 10px', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}
+                      onMouseEnter={(e) => { e.target.style.background = '#fde8e8'; playHover(); }}
+                      onMouseLeave={(e) => e.target.style.background = '#fdf2f2'}
+                    >
+                      🗑️ حذف
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
