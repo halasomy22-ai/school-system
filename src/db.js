@@ -7,10 +7,11 @@ const supabaseKey = 'sb_secret_voSi9g6FajwmvL-tnxIvVw_WfrlyZ3A';
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
 const DB_NAME = 'SchoolDB';
-const DB_VERSION = 3; 
+const DB_VERSION = 4; // تم رفع الإصدار لتهيئة المخزن الجديد تلقائياً
 const STORE_NAME = 'students';
 const TEACHERS_STORE = 'teachers'; 
 const TRANSACTIONS_STORE = 'transactions';
+const USERS_STORE = 'users'; // تعريف مخزن المستخدمين الأساسي
 
 export const initDB = () => {
   return new Promise((resolve, reject) => {
@@ -27,6 +28,10 @@ export const initDB = () => {
       }
       if (!db.objectStoreNames.contains(TRANSACTIONS_STORE)) {
         db.createObjectStore(TRANSACTIONS_STORE, { keyPath: 'id', autoIncrement: true });
+      }
+      // إصلاح الخطأ: إنشاء مخزن المستخدمين محلياً لمنع توقف الدالة
+      if (!db.objectStoreNames.contains(USERS_STORE)) {
+        db.createObjectStore(USERS_STORE, { keyPath: 'id' });
       }
     };
   });
@@ -190,10 +195,9 @@ export const addSystemUser = async (user) => {
   }
   const db = await initDB();
   return new Promise((resolve, reject) => {
-    if (!db.objectStoreNames.contains('users')) { resolve(null); return; }
-    const transaction = db.transaction('users', 'readwrite');
-    const store = transaction.objectStore('users');
-    const request = store.add(user);
+    const transaction = db.transaction(USERS_STORE, 'readwrite');
+    const store = transaction.objectStore(USERS_STORE);
+    const request = store.put(user); // استخدام put لضمان مرونة الكتابة والتحديث
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
@@ -207,14 +211,31 @@ export const getAllSystemUsers = async () => {
       return data.map(item => ({ id: item.id, ...item.data }));
     }
   } catch (e) {
-    console.error("خطأ في جلب المستخدمين:", e);
+    console.error("خطأ في جلب المستخدمين سحابياً، جاري المحاولة محلياً:", e);
   }
   const db = await initDB();
   return new Promise((resolve, reject) => {
-    if (!db.objectStoreNames.contains('users')) { resolve([]); return; }
-    const transaction = db.transaction('users', 'readonly');
-    const store = transaction.objectStore('users');
+    const transaction = db.transaction(USERS_STORE, 'readonly');
+    const store = transaction.objectStore(USERS_STORE);
     const request = store.getAll();
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+};
+
+// إضافة دالة الحذف المباشر والسحابي للمستخدمين
+export const deleteSystemUser = async (id) => {
+  try {
+    const { error } = await supabase.from('users').delete().eq('id', id);
+    if (error) throw error;
+  } catch (e) {
+    console.error("خطأ في حذف المستخدم سحابياً:", e);
+  }
+  const db = await initDB();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(USERS_STORE, 'readwrite');
+    const store = transaction.objectStore(USERS_STORE);
+    const request = store.delete(id);
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
