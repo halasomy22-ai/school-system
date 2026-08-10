@@ -28,11 +28,13 @@ export default function App() {
     } catch (err) { alert("خطأ في الاتصال!"); setIsSubmitting(false); }
   };
 
-  if (isLoggedIn) return <DashboardSection selectedUser={currentUser} handlePermissionChange={() => {}} playHover={() => {}} handleLogout={handleLogout} />;
+  if (isLoggedIn) return <DashboardSection selectedUser={currentUser} handlePermissionChange={() => {}} playHover={() => {}} handleLogout={() => { setIsLoggedIn(false); localStorage.clear(); }} />;
 
   return (
-    <div className="shorouk-container">
-      <div className="shorouk-header">
+    <div className="shorouk-container" style={{ background: '#0d1b2a !important', backgroundColor: '#0d1b2a' }}>
+      
+      {/* البار العلوي الثابت بلون رمادي كحلي داكن وناعم جداً */}
+      <div className="shorouk-header" style={{ background: '#1b263b !important', backgroundColor: '#1b263b', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
         <div className="shorouk-logo-zone">
           <div className="shorouk-logo-wrapper">
             <img src="/logo.png" alt="logo" onError={(e) => { e.target.style.display = 'none'; e.target.parentNode.innerHTML = '☀️'; }} />
@@ -49,34 +51,36 @@ export default function App() {
         </form>
       </div>
 
-      <div className="shorouk-content">
+      {/* المحتوى الرئيسي للتعريف بخلفية كحلية مطفأة مريحة للعين */}
+      <div className="shorouk-content" style={{ background: '#0d1b2a !important', backgroundColor: '#0d1b2a' }}>
         <div className="shorouk-section">
-          <h2>من نحن؟</h2>
+          <h2 style={{ color: '#4caf50', borderRight: '3px solid #4caf50' }}>من نحن؟</h2>
           <p>صرح تعليمي متميز يسعى لتقديم بيئة تربوية ملهمة تواكب أحدث المعايير الأكاديمية لجميع المراحل <span className="highlight-text">(حضانة - ابتدائي - متوسط - ثانوي)</span>، لتنشئة جيل مبدع ومتمسك بقيمه الأخلاقية.</p>
         </div>
 
         <div className="shorouk-section">
-          <h2>مجلس الإدارة الموقر</h2>
+          <h2 style={{ color: '#4caf50', borderRight: '3px solid #4caf50' }}>مجلس الإدارة الموقر</h2>
           <div className="shorouk-grid grid-admin">
-            <div className="admin-card"><span>المدير العام</span><strong>أستاذ كمال الدين المجذوب</strong></div>
-            <div className="admin-card"><span>نائب المدير العام</span><strong>ماما هند عبد الرازق</strong></div>
-            <div className="admin-card"><span>الهيئة الإدارية</span><strong>الأستاذة لينا كمال المجذوب</strong></div>
-            <div className="admin-card"><span>الهيئة الإدارية</span><strong>الأستاذ محمد كمال المجذوب</strong></div>
+            <div className="admin-card" style={{ background: '#1b263b', border: '1px solid rgba(255,255,255,0.05)' }}><span>المدير العام</span><strong>أستاذ كمال الدين المجذوب</strong></div>
+            <div className="admin-card" style={{ background: '#1b263b', border: '1px solid rgba(255,255,255,0.05)' }}><span>نائب المدير العام</span><strong>ماما هند عبد الرازق</strong></div>
+            <div className="admin-card" style={{ background: '#1b263b', border: '1px solid rgba(255,255,255,0.05)' }}><span>الهيئة الإدارية</span><strong style={{ color: '#fff' }}>الأستاذة لينا كمال المجذوب</strong></div>
+            <div className="admin-card" style={{ background: '#1b263b', border: '1px solid rgba(255,255,255,0.05)' }}><span>الهيئة الإدارية</span><strong style={{ color: '#fff' }}>الأستاذ محمد كمال المجذوب</strong></div>
           </div>
         </div>
 
         <div className="shorouk-section">
-          <h2>أهدافنا الإستراتيجية</h2>
+          <h2 style={{ color: '#4caf50', borderRight: '3px solid #4caf50' }}>أهدافنا الإستراتيجية</h2>
           <div className="shorouk-grid grid-goals">
-            <div className="goal-card"><div>🎓</div><h3>التميز الأكاديمي</h3><p>تقديم مناهج قوية ومطورة تنمي التفكير والابتكار.</p></div>
-            <div className="goal-card"><div>🤝</div><h3>بناء الشخصية</h3><p>غرس القيم الأخلاقية والاعتماد على الذات لدى الطلاب.</p></div>
-            <div className="goal-card"><div>💻</div><h3>الدمج التقني</h3><p>بيئة رقمية ذكية تسهل تواصل الإدارة والمعلم والطالب.</p></div>
-            <div className="goal-card"><div>🎯</div><h3>رعاية المواهب</h3><p>اكتشاف المهارات الفردية وتطويرها بأنشطة مكثفة.</p></div>
+            <div className="goal-card" style={{ background: '#1b263b', border: '1px solid rgba(255,255,255,0.05)' }}><div>🎓</div><h3>التميز الأكاديمي</h3><p>تقديم مناهج قوية ومطورة تنمي التفكير والابتكار.</p></div>
+            <div className="goal-card" style={{ background: '#1b263b', border: '1px solid rgba(255,255,255,0.05)' }}><div>🤝</div><h3>بناء الشخصية</h3><p>غرس القيم الأخلاقية والاعتماد على الذات لدى الطلاب.</p></div>
+            <div className="goal-card" style={{ background: '#1b263b', border: '1px solid rgba(255,255,255,0.05)' }}><div>💻</div><h3>الدمج التقني</h3><p>بيئة رقمية ذكية تسهل تواصل الإدارة والمعلم والطالب.</p></div>
+            <div className="goal-card" style={{ background: '#1b263b', border: '1px solid rgba(255,255,255,0.05)' }}><div>🎯</div><h3>رعاية المواهب</h3><p>اكتشاف المهارات الفردية وتطويرها بأنشطة مكثفة.</p></div>
           </div>
         </div>
       </div>
 
-      <div className="shorouk-footer">
+      {/* شريط الحقوق السفلي بنفس اللون الناعم */}
+      <div className="shorouk-footer" style={{ background: '#1b263b !important', backgroundColor: '#1b263b', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
         <div className="footer-contacts">
           <span>📞 <strong>الهاتف:</strong> 01116874770</span>
           <span>✉️ <strong>البريد:</strong> lumyaa@cush.digital</span>
