@@ -89,7 +89,7 @@ export default function App() {
 
   if (!isLoggedIn) {
     return (
-      <div style={{ display: 'flex !important', display: 'flex', minHeight: '100vh', width: '100vw', background: '#0e1e38', direction: 'rtl', fontFamily: 'system-ui, -apple-system, sans-serif', flexWrap: 'wrap', margin: 0, padding: 0, boxSizing: 'border-box' }}>
+      <div style={{ display: 'flex', minHeight: '100vh', width: '100%', background: '#0e1e38', direction: 'rtl', fontFamily: 'system-ui, -apple-system, sans-serif', flexWrap: 'wrap', margin: 0, padding: 0, boxSizing: 'border-box' }}>
         
         {/* الجانب الأيمن: اللوحة التعريفية بالمدرسة وأهدافها */}
         <div style={{ flex: '1 1 55%', padding: '40px 5%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'linear-gradient(135deg, #09152a 0%, #0e1e38 100%)', color: '#ffffff', boxSizing: 'border-box', minWidth: '320px' }}>
@@ -150,7 +150,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* الفوتر السفلي المتكامل لمعلومات التواصل والادارة */}
+          {/* الفوتر السفلي المتكامل لمعلومات التواصل والإدارة */}
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '20px', marginTop: '40px', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '15px', fontSize: '12px', color: '#a0aec0' }}>
             <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
               <span>📞 <strong style={{ color: '#fff' }}>الهاتف:</strong> 01116874770</span>
