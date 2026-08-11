@@ -51,12 +51,47 @@ export default function App() {
         </form>
       </div>
 
-      {/* المحتوى الرئيسي للتعريف بخلفية كحلية مطفأة مريحة للعين */}
-      <div className="shorouk-content" style={{ background: '#0d1b2a !important', backgroundColor: '#0d1b2a' }}>
-        <div className="shorouk-section">
-          <h2 style={{ color: '#4caf50', borderRight: '3px solid #4caf50' }}>من نحن؟</h2>
-          <p>صرح تعليمي متميز يسعى لتقديم بيئة تربوية ملهمة تواكب أحدث المعايير الأكاديمية لجميع المراحل <span className="highlight-text">(حضانة - ابتدائي - متوسط - ثانوي)</span>، لتنشئة جيل مبدع ومتمسك بقيمه الأخلاقية.</p>
+              {/* المحتوى الرئيسي بخلفية فاتحة مريحة للعين */}
+        <div className="shorouk-content" style={{ background: 'linear-gradient(135deg, #f4f7f5 0%, #e9efe3 100%)', minHeight: '100vh', color: '#2d3748' }}>
+          
+          <div className="shorouk-section">
+            <h2 style={{ color: '#2d6a4f', borderRight: '3px solid #2d6a4f' }}>من نحن؟</h2>
+            <p style={{ color: '#4a5568', lineHeight: '1.6' }}>
+              صرح تعليمي متميز يسعى لتقديم بيئة تربوية ملهمة تواكب أحدث المعايير الأكاديمية لجميع المراحل (<span className="highlight-text" style={{ color: '#b45309', fontWeight: '600' }}>حضانة - ابتدائي - متوسط - ثانوي</span>)، لتنشئة جيل مبدع ومتمسك بقيمه الأخلاقية.
+            </p>
+          </div>
+
+          <div className="shorouk-section">
+            <h2 style={{ color: '#2d6a4f', borderRight: '3px solid #2d6a4f' }}>مجلس الإدارة الموقر</h2>
+            <div className="shorouk-grid grid-admin">
+              <div className="admin-card" style={{ background: '#ffffff', border: '1px solid #e2e8f0', padding: '12px 15px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                <span style={{ color: '#718096', display: 'block', fontSize: '11px' }}>المدير العام</span>
+                <strong style={{ color: '#1a202c' }}>أستاذ كمال الدين المجذوب</strong>
+              </div>
+              <div className="admin-card" style={{ background: '#ffffff', border: '1px solid #e2e8f0', padding: '12px 15px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                <span style={{ color: '#718096', display: 'block', fontSize: '11px' }}>نائب المدير العام</span>
+                <strong style={{ color: '#1a202c' }}>ماما هند عبد الرازق</strong>
+              </div>
+              <div className="admin-card" style={{ background: '#ffffff', border: '1px solid #e2e8f0', padding: '12px 15px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                <span style={{ color: '#718096', display: 'block', fontSize: '11px' }}>الهيئة الإدارية</span>
+                <strong style={{ color: '#2d6a4f' }}>الأستاذة لينا كمال المجذوب</strong>
+              </div>
+              <div className="admin-card" style={{ background: '#ffffff', border: '1px solid #e2e8f0', padding: '12px 15px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                <span style={{ color: '#718096', display: 'block', fontSize: '11px' }}>الهيئة الإدارية</span>
+                <strong style={{ color: '#2d6a4f' }}>الأستاذ محمد كمال المجذوب</strong>
+              </div>
+            </div>
+          </div>
+
+          <div className="shorouk-section">
+            <h2 style={{ color: '#2d6a4f', borderRight: '3px solid #2d6a4f' }}>أهدافنا الإستراتيجية</h2>
+            <div className="shorouk-grid grid-goals">
+              {/* هنا يمكنك إكمال بطاقات الأهداف بنفس نمط البطاقات العلوية الفاتحة */}
+            </div>
+          </div>
+
         </div>
+
 
         <div className="shorouk-section">
           <h2 style={{ color: '#4caf50', borderRight: '3px solid #4caf50' }}>مجلس الإدارة الموقر</h2>
