@@ -113,5 +113,5 @@ export default function App() {
         </div>
       </div>
 
-      {/* شريط الحقوق السفلي (الفوتر) تم إصلاح الخطأ البرمجي بوضع علامات التنصيص لـ 'wrap' */}
+      {/* شريط الحقوق السفلي (الفوتر) باللون الرمادي الفاتح الناعم */}
       <div className="shorouk-footer" style={{ background: '#eef2f0', borderTop: '1px solid #dee5e0', padding: '15px 5%', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', fontSize: '11px', color: '#52665a', alignItems: 'center' }}>
