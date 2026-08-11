@@ -85,7 +85,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* قسم الأهداف الاستراتيجية الفاتح */}
+        {/* قسم الأهداف الاستراتيجية */}
         <div className="shorouk-section">
           <h2 style={{ color: '#2d6a4f', borderRight: '3px solid #2d6a4f', margin: '0 0 10px 0', fontSize: '18px', fontWeight: '700', paddingRight: '8px' }}>أهدافنا الإستراتيجية</h2>
           <div className="shorouk-grid grid-goals">
@@ -107,11 +107,11 @@ export default function App() {
             <div className="goal-card" style={{ background: '#ffffff', border: '1px solid #e2e8f0', padding: '15px', borderRadius: '10px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
               <div style={{ fontSize: '18px', marginBottom: '4px' }}>🎯</div>
               <h3 style={{ margin: '0 0 4px 0', fontSize: '14px', color: '#2d6a4f', fontWeight: '700' }}>رعاية المواهب</h3>
-              <p style={{ margin: 0, fontSize: '11px', color: '#4a5568', lineHeight: '1.4' }}>اكتشاف Mهارات الفردية وتطويرها بأنشطة مكثفة.</p>
+              <p style={{ margin: 0, fontSize: '11px', color: '#4a5568', lineHeight: '1.4' }}>اكتشاف المهارات الفردية وتطويرها بأنشطة مكثفة.</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* شريط الحقوق السفلي (الفوتر) باللون الرمادي الفاتح الناعم */}
-      <div className="shorouk-footer" style={{ background: '#eef2f0', borderTop: '1px solid #dee5e0', padding: '15px 5%', display: 'flex', justifyContent: 'space-between', flexWrap: wrap, gap: '10px', fontSize: '11px', color: '#52665a', alignItems: 'center' }}>
+      {/* شريط الحقوق السفلي (الفوتر) تم إصلاح الخطأ البرمجي بوضع علامات التنصيص لـ 'wrap' */}
+      <div className="shorouk-footer" style={{ background: '#eef2f0', borderTop: '1px solid #dee5e0', padding: '15px 5%', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', fontSize: '11px', color: '#52665a', alignItems: 'center' }}>
