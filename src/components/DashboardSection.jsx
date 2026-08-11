@@ -2,25 +2,27 @@ import React, { useState } from 'react';
 import StudentsSection from './StudentsSection';
 import ClassesSection from './ClassesSection';
 import TeachersSection from './TeachersSection';
-import FinancialDashboard from './FinancialDashboard'; // تم ربطه بالملف الموحد الجديد
+import FinancialDashboard from './FinancialDashboard'; 
 import ResultsSection from './ResultsSection';
 import UsersPermissionsSection from './UsersPermissionsSection';
 
 const DashboardSection = ({ 
   selectedUser = null, 
   handlePermissionChange = () => {}, 
+  handleUserDelete = () => {},
   playHover = () => {}, 
   handleLogout = () => {} 
 }) => {
-  // تلبيةً لطلبك: يبدأ التطبيق بتبويب 'empty' لتكون الصفحة فارغة تماماً من البيانات عند الدخول ما عدا الأزرار
+  // يبدأ التطبيق بتبويب 'empty' لتكون الصفحة فارغة تماماً من البيانات عند الدخول ما عدا الأزرار
   const [activeTab, setActiveTab] = useState('empty');
 
-  // جلب الصلاحيات الفعلية للمستخدم الحالي أو صلاحيات كاملة كخيار احتياطي
+  // جلب الصلاحيات الفعلية للمستخدم الحالي
   const userPermissions = selectedUser?.permissions || { students: true, classes: true, teachers: true, finance: true, results: true };
 
   // بناء أزرار التنقل وتصفيتها برمجياً بناءً على صلاحيات المستخدم الممررة
   const allNavItems = [
-    { key: 'home', label: 'لوحة التحكم', permission: true }, // متاحة دائماً للجميع لعرض كرت أسوان
+    // 🔒 التعديل المطلوب: جعل زر لوحة التحكم حصرياً وخاصاً بحسابك أنت فقط كأدمن (admin / osman) ويختفي تماماً عن بقية الحسابات الإدارية
+    { key: 'home', label: 'لوحة التحكم', permission: selectedUser?.role === 'osman' || selectedUser?.loginName === 'admin' }, 
     { key: 'students', label: 'الطلاب', permission: userPermissions.students },
     { key: 'classes', label: 'الفصول', permission: userPermissions.classes },
     { key: 'teachers', label: 'المعلمين', permission: userPermissions.teachers },
@@ -94,22 +96,25 @@ const DashboardSection = ({
           <div style={{ textAlign: 'center', padding: '60px 20px', color: '#64748b' }}>
             <div style={{ fontSize: '50px', marginBottom: '15px' }}>✨</div>
             <h3 style={{ fontSize: '22px', fontWeight: '800', color: '#1a365d', margin: '0 0 10px 0' }}>نظام مدرسة الشروق الإلكتروني</h3>
-            <p style={{ fontSize: '15px', margin: 0 }}>تم تسجيل الدخول بنجاح. الرجاء الضغط على أحد الأزرار في القائمة العلوية لإدارة النظام.</p>
+            <p style={{ fontSize: '15px', margin: 0 }}>تم تسجيل الدخول بنجاح. الرجاء الضغط على أحد الأزرار المتاحة في القائمة العلوية لاستعراض وإدارة النظام.</p>
           </div>
         )}
 
-        {/* زر لوحة التحكم يعرض كرت الترحيب بأسوان وإدارة الصلاحيات للأدمن */}
-        {activeTab === 'home' && (
+        {/* زر لوحة التحكم يظهر فقط وحصرياً للأدمن الأساسي لعرض كرت الترحيب وإدارة المستخدمين الجدد وحذفهم */}
+        {activeTab === 'home' && (selectedUser?.role === 'osman' || selectedUser?.loginName === 'admin') && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', width: '100%' }}>
             <div style={{ width: '100%', borderRadius: '32px', background: 'linear-gradient(135deg, #0b192e 0%, #15345d 100%)', padding: '40px', boxSizing: 'border-box', textAlign: 'center', boxShadow: '0 15px 30px rgba(0,0,0,0.1)' }}>
               <h1 style={{ color: '#f6c23e', fontSize: '32px', fontWeight: '900', margin: '0 0 10px 0', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>مدارس الشروق السودانية - أسوان</h1>
               <p style={{ color: '#f6c23e', fontSize: '18px', fontWeight: '700', margin: '0', background: 'rgba(246, 194, 62, 0.1)', padding: '6px 24px', borderRadius: '50px', display: 'inline-block' }}>( حضانة - ابتدائي - متوسط - ثانوي )</p>
             </div>
             
-            {/* عرض قسم الصلاحيات حصرياً للأدمن الأساسي لحماية النظام */}
-            {(selectedUser?.role === 'أدمن' || selectedUser?.loginName === 'admin' || selectedUser?.role === 'osman') && (
-              <UsersPermissionsSection selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} playHover={playHover} />
-            )}
+            {/* استدعاء قسم الصلاحيات لإضافة وحذف المستخدمين */}
+            <UsersPermissionsSection 
+              selectedUser={selectedUser} 
+              handlePermissionChange={handlePermissionChange} 
+              handleUserDelete={handleUserDelete}
+              playHover={playHover} 
+            />
           </div>
         )}
         
@@ -121,7 +126,7 @@ const DashboardSection = ({
         {activeTab === 'results' && userPermissions.results && <ResultsSection playHover={playHover} selectedUser={selectedUser} handlePermissionChange={handlePermissionChange} />}
       </div>
 
-      {/* شريط التذييل المطور والخاص بأبو حلا */}
+      {/* شريط التذييل الخاص بأبو حلا */}
       <footer style={{ flexShrink: '0', width: '100%', background: '#ffffff', borderTop: '1px solid #e1e8f0', padding: '16px 20px', boxSizing: 'border-box', textAlign: 'center' }}>
         <p style={{ margin: 0, color: '#1a365d', fontSize: '15px', fontWeight: '700', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <span>تم التصميم والتطوير بواسطة:</span>
