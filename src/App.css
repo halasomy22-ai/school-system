@@ -14,24 +14,28 @@
   --highlight-amber: #b45309;   /* لون التمييز للمراحل الدراسية */
 }
 
-/* التنسيقات العامة والهيكلية */
+/* إعادة تعيين الإعدادات العامة لضمان عدم الخروج عن الإطار */
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .shorouk-container {
   background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
   min-height: 100vh;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-/* إصلاح الهيدر ليصبح مرناً وموزعاً على الطرفين */
+/* الهيدر: متجاوب ومرن */
 .shorouk-header {
   background: var(--white);
   border-bottom: 1px solid #dee5e0;
@@ -40,27 +44,29 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
+  flex-wrap: wrap; /* يسمح بنزول العناصر للأسفل في الشاشات الصغيرة */
+  gap: 15px;
+  width: 100%;
 }
 
-/* تنسيق منطقة الشعار والاسم */
+/* منطقة الشعار والنصوص المصاحبة */
 .shorouk-logo-zone {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
 }
 
 .shorouk-logo-wrapper {
   border: 1px solid var(--border-light);
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #fafafa;
   overflow: hidden;
+  flex-shrink: 0; /* يمنع انضغاط اللوجو */
 }
 
 .shorouk-logo-wrapper img {
@@ -74,6 +80,7 @@ body {
   margin: 0;
   font-size: 18px;
   font-weight: 800;
+  line-height: 1.2;
 }
 
 .shorouk-title-wrapper p {
@@ -82,11 +89,12 @@ body {
   font-size: 11px;
 }
 
-/* تنسيق نموذج تسجيل الدخول ليكون في سطر واحد متناسق */
+/* نموذج تسجيل الدخول ليكون مرناً ومصطفاً في سطر واحد على الكمبيوتر */
 .shorouk-login-form {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap; /* يدعم الهواتف عند صغر مساحة العرض */
 }
 
 .shorouk-login-form input {
@@ -97,7 +105,8 @@ body {
   border-radius: 6px;
   font-size: 13px;
   outline: none;
-  width: 160px;
+  width: 150px;
+  transition: border-color 0.2s;
 }
 
 .shorouk-login-form input:focus {
@@ -125,20 +134,21 @@ body {
   font-size: 13px;
 }
 
-/* المحتوى الرئيسي للموقع */
+/* الحاوية الأساسية للمحتوى */
 .shorouk-content {
-  padding: 40px 5%;
+  padding: 25px 5%;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 25px;
   color: var(--text-dark);
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
 }
 
+/* الأقسام العامة داخل الموقع */
 .shorouk-section {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.45);
   padding: 20px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.6);
@@ -147,17 +157,16 @@ body {
 .shorouk-section h2 {
   color: var(--primary-green);
   border-right: 4px solid var(--primary-green);
-  margin: 0 0 15px 0;
-  font-size: 18px;
+  margin: 0 0 12px 0;
+  font-size: 17px;
   font-weight: 700;
   padding-right: 10px;
 }
 
 .shorouk-section p {
   color: var(--text-body);
-  line-height: 1.7;
+  line-height: 1.6;
   font-size: 14px;
-  margin: 0;
 }
 
 .highlight-text {
@@ -165,10 +174,10 @@ body {
   font-weight: 600;
 }
 
-/* تنسيق شبكة البطاقات لجعلها متجاوبة ومصطفة بشكل صحيح */
+/* شبكة البطاقات: تصبح عموداً واحداً في الهواتف وتتمدد تلقائياً في الشاشات الأكبر */
 .shorouk-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 15px;
   margin-top: 15px;
 }
@@ -178,7 +187,7 @@ body {
   border: 1px solid var(--border-light);
   padding: 15px;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.01);
 }
 
 .admin-card span {
@@ -201,14 +210,14 @@ body {
 .goal-card {
   background: var(--white);
   border: 1px solid var(--border-light);
-  padding: 20px;
+  padding: 18px;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.01);
 }
 
 .goal-card h3 {
-  margin: 10px 0 6px 0;
-  font-size: 15px;
+  margin: 8px 0 4px 0;
+  font-size: 14px;
   color: var(--primary-green);
   font-weight: 700;
 }
@@ -218,4 +227,33 @@ body {
   font-size: 12px;
   color: var(--text-body);
   line-height: 1.5;
+}
+
+/* 📱 قواعد خاصة بالشاشات الصغيرة جداً (الهواتف المحمولة أقل من 600 بكسل) */
+@media (max-width: 600px) {
+  .shorouk-header {
+    flex-direction: column; /* جعل الشعار والـ Form فوق بعضهما */
+    align-items: stretch; /* تمديد العناصر لملء العرض المتاح */
+    text-align: center;
+    padding: 15px;
+  }
+
+  .shorouk-logo-zone {
+    justify-content: center; /* توسيط الشعار والاسم في الهاتف */
+  }
+
+  .shorouk-login-form {
+    flex-direction: column; /* جعل حقول الإدخال والزر عمودية لسهولة الضغط */
+    align-items: stretch;
+    width: 100%;
+    margin-top: 5px;
+  }
+
+  .shorouk-login-form input {
+    width: 100%; /* تمديد حقول النص لتملأ عرض الشاشة بالكامل */
+  }
+  
+  .shorouk-content {
+    padding: 15px;
+  }
 }
