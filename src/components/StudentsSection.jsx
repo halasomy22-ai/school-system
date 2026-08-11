@@ -36,7 +36,7 @@ export default function StudentsSection() {
     
     try {
       const newStudent = {
-        id: Date.now(), // توليد معرف فريد احتياطي في حال عدم توليده في السحابة
+        id: Date.now(), 
         name: newName.trim(),
         class: newClass,
         gender: newGender
@@ -45,7 +45,6 @@ export default function StudentsSection() {
       await addStudent(newStudent);
       await loadStudentsData();
       
-      // تفريغ المدخلات وإغلاق المودال
       setNewName('');
       setIsModalOpen(false);
       alert("تم حفظ بيانات الطالب بنجاح في قاعدة البيانات وتحديث المساق الدراسي 💾");
@@ -78,7 +77,7 @@ export default function StudentsSection() {
   return (
     <div style={{ padding: '15px 10px', direction: 'rtl', fontFamily: 'system-ui, sans-serif' }}>
       
-      {/* صف الأزرار الرئيسي - متجاوب ومرن للهواتف والكمبيوتر */}
+      {/* صف الأزرار الرئيسي */}
       <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', marginBottom: '30px', flexWrap: 'wrap' }}>
         <button 
           onClick={() => setIsModalOpen(true)}
@@ -121,7 +120,6 @@ export default function StudentsSection() {
             </div>
           </div>
 
-          {/* جدول بيانات الطلاب المعدل والمهيأ للتجاوب مع الهواتف */}
           <div style={{ width: '100%', overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px', minWidth: '500px' }}>
               <thead>
@@ -153,10 +151,10 @@ export default function StudentsSection() {
         </div>
       )}
 
-      {/* 📥 نافذة إضافة طالب منبثقة (المودال المدمج برمجياً وبشكل متناسق للغاية) */}
+      {/* نافذة إضافة طالب منبثقة المدمجة */}
       {isModalOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '15px' }}>
-          <div style={{ background: '#fff', width: '100%', maxWidth: '450px', borderRadius: '24px', padding: '25px', boxSizing: 'border-box', boxShadow: '0 20px 40px rgba(0,0,0,0.15)', animate: 'fadeIn 0.3s' }}>
+          <div style={{ background: '#fff', width: '100%', maxWidth: '450px', borderRadius: '24px', padding: '25px', boxSizing: 'border-box', boxShadow: '0 20px 40px rgba(0,0,0,0.15)' }}>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid #e3e6f0', paddingBottom: '10px' }}>
               <h3 style={{ margin: 0, color: '#15345d', fontSize: '18px', fontWeight: '800' }}>➕ قيد طالب جديد في المنظومة</h3>
@@ -182,3 +180,10 @@ export default function StudentsSection() {
                   {classOptions.map((g, idx) => (
                     <optgroup key={idx} label={g.group}>
                       {g.items.map((item, i) => <option key={i} value={item}>{item}</option>)}
+                    </optgroup>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontWeight: '700', fontSize: '13px', color: '#4a5568' }}>الجنس الفعلي:</label>
