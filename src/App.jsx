@@ -18,8 +18,8 @@ export default function App() {
   const adminProfile = { 
     id: 1, 
     name: "عثمان صديق", 
-    loginName: "admin", 
-    role: "osman", 
+    loginName: "osman", 
+    role: "admin", 
     pin: "198234", 
     permissions: { students: true, classes: true, teachers: true, finance: true, results: true } 
   };
