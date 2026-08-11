@@ -1,241 +1,117 @@
-import { createClient } from '@supabase/supabase-js';
+// ==========================================
+// نظام إدارة قاعدة البيانات المحلية - مدارس الشروق
+// متصل ومستقل بالكامل ويعمل عبر جيت هوب فقط
+// ==========================================
 
-// الروابط والمفاتيح السحابية السرية والحقيقية لمشروع AlShorouk
-const supabaseUrl = 'https://supabase.co';
-const supabaseKey = 'sb_secret_voSi9g6FajwmvL-tnxIvVw_WfrlyZ3A';
+const DB_NAME = 'ShoroukSchoolDB';
+const DB_VERSION = 1;
+const USERS_STORE = 'system_users';
+const STUDENTS_STORE = 'students_data';
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
-
-const DB_NAME = 'SchoolDB';
-const DB_VERSION = 4; // تم رفع الإصدار لتهيئة المخزن الجديد تلقائياً
-const STORE_NAME = 'students';
-const TEACHERS_STORE = 'teachers'; 
-const TRANSACTIONS_STORE = 'transactions';
-const USERS_STORE = 'users'; // تعريف مخزن المستخدمين الأساسي
-
+// 1. دالة تهيئة وتأسيس قاعدة البيانات المحلية في المتصفح
 export const initDB = () => {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
-    request.onerror = (event) => reject(event.target.error);
-    request.onsuccess = (event) => resolve(event.target.result);
+
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
-      }
-      if (!db.objectStoreNames.contains(TEACHERS_STORE)) {
-        db.createObjectStore(TEACHERS_STORE, { keyPath: 'id', autoIncrement: true });
-      }
-      if (!db.objectStoreNames.contains(TRANSACTIONS_STORE)) {
-        db.createObjectStore(TRANSACTIONS_STORE, { keyPath: 'id', autoIncrement: true });
-      }
-      // إصلاح الخطأ: إنشاء مخزن المستخدمين محلياً لمنع توقف الدالة
+      
+      // إنشاء مخزن مستخدمي النظام والصلاحيات
       if (!db.objectStoreNames.contains(USERS_STORE)) {
-        db.createObjectStore(USERS_STORE, { keyPath: 'id' });
+        db.createObjectStore(USERS_STORE, { keyPath: 'id', autoIncrement: true });
+      }
+      // إنشاء مخزن بيانات الطلاب
+      if (!db.objectStoreNames.contains(STUDENTS_STORE)) {
+        db.createObjectStore(STUDENTS_STORE, { keyPath: 'id', autoIncrement: true });
       }
     };
+
+    request.onsuccess = (event) => resolve(event.target.result);
+    request.onerror = (event) => reject(event.target.error);
   });
 };
 
-/* ================= دوال التحكم في الطلاب ================= */
-export const addStudent = async (student) => {
-  try {
-    const { error } = await supabase.from('students').insert([{ data: student }]);
-    if (error) throw error;
-  } catch (e) {
-    console.error("خطأ في الحفظ السحابي، جاري الحفظ محلياً:", e);
-  }
-  const db = await initDB();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(STORE_NAME, 'readwrite');
-    const store = transaction.objectStore(STORE_NAME);
-    const request = store.add(student);
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-};
+// ==========================================
+// أولاً: دوال إدارة مستخدمي النظام والصلاحيات
+// ==========================================
 
-export const getAllStudents = async () => {
-  try {
-    const { data, error } = await supabase.from('students').select('*');
-    if (error) throw error;
-    if (data && data.length > 0) {
-      return data.map(item => ({ id: item.id, ...item.data }));
-    }
-  } catch (e) {
-    console.error("خطأ في جلب البيانات:", e);
-  }
-  const db = await initDB();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(STORE_NAME, 'readonly');
-    const store = transaction.objectStore(STORE_NAME);
-    const request = store.getAll();
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-};
-
-export const deleteStudent = async (id) => {
-  try {
-    const { error } = await supabase.from('students').delete().eq('id', id);
-    if (error) throw error;
-  } catch (e) {
-    console.error(e);
-  }
-  const db = await initDB();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(STORE_NAME, 'readwrite');
-    const store = transaction.objectStore(STORE_NAME);
-    const request = store.delete(id);
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-};
-
-/* ================= دوال التحكم في المعلمين ================= */
-export const addTeacher = async (teacher) => {
-  try {
-    const { error } = await supabase.from('teachers').insert([{ data: teacher }]);
-    if (error) throw error;
-  } catch (e) {
-    console.error(e);
-  }
-  const db = await initDB();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(TEACHERS_STORE, 'readwrite');
-    const store = transaction.objectStore(TEACHERS_STORE);
-    const request = store.add(teacher);
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-};
-
-export const getAllTeachers = async () => {
-  try {
-    const { data, error } = await supabase.from('teachers').select('*');
-    if (error) throw error;
-    if (data && data.length > 0) {
-      return data.map(item => ({ id: item.id, ...item.data }));
-    }
-  } catch (e) {
-    console.error(e);
-  }
-  const db = await initDB();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(TEACHERS_STORE, 'readonly');
-    const store = transaction.objectStore(TEACHERS_STORE);
-    const request = store.getAll();
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-};
-
-export const deleteTeacher = async (id) => {
-  try {
-    const { error } = await supabase.from('teachers').delete().eq('id', id);
-    if (error) throw error;
-  } catch (e) {
-    console.error(e);
-  }
-  const db = await initDB();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(TEACHERS_STORE, 'readwrite');
-    const store = transaction.objectStore(TEACHERS_STORE);
-    const request = store.delete(id);
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-};
-
-/* ================= دوال التحكم في المعاملات المالية ================= */
-export const addTransaction = async (trans) => {
-  try {
-    const { error } = await supabase.from('transactions').insert([{ data: trans }]);
-    if (error) throw error;
-  } catch (e) {
-    console.error(e);
-  }
-  const db = await initDB();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(TRANSACTIONS_STORE, 'readwrite');
-    const store = transaction.objectStore(TRANSACTIONS_STORE);
-    const request = store.add(trans);
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-};
-
-export const getAllTransactions = async () => {
-  try {
-    const { data, error } = await supabase.from('transactions').select('*');
-    if (error) throw error;
-    if (data && data.length > 0) {
-      return data.map(item => ({ id: item.id, ...item.data }));
-    }
-  } catch (e) {
-    console.error(e);
-  }
-  const db = await initDB();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(TRANSACTIONS_STORE, 'readonly');
-    const store = transaction.objectStore(TRANSACTIONS_STORE);
-    const request = store.getAll();
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-};
-
-/* ================= دوال التحكم في مستخدمي النظام والمسؤولين ================= */
-export const addSystemUser = async (user) => {
-  try {
-    const { error } = await supabase.from('users').insert([{ data: user }]);
-    if (error) throw error;
-  } catch (e) {
-    console.error("خطأ في حفظ المستخدم سحابياً:", e);
-  }
-  const db = await initDB();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(USERS_STORE, 'readwrite');
-    const store = transaction.objectStore(USERS_STORE);
-    const request = store.put(user); // استخدام put لضمان مرونة الكتابة والتحديث
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-};
-
+// جلب جميع مستخدمي النظام
 export const getAllSystemUsers = async () => {
-  try {
-    const { data, error } = await supabase.from('users').select('*');
-    if (error) throw error;
-    if (data && data.length > 0) {
-      return data.map(item => ({ id: item.id, ...item.data }));
-    }
-  } catch (e) {
-    console.error("خطأ في جلب المستخدمين سحابياً، جاري المحاولة محلياً:", e);
-  }
   const db = await initDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(USERS_STORE, 'readonly');
     const store = transaction.objectStore(USERS_STORE);
     const request = store.getAll();
+
+    request.onsuccess = () => resolve(request.result || []);
+    request.onerror = () => reject(request.error);
+  });
+};
+
+// إضافة أو تحديث مستخدم في النظام
+export const addSystemUser = async (user) => {
+  const db = await initDB();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(USERS_STORE, 'readwrite');
+    const store = transaction.objectStore(USERS_STORE);
+    const request = store.put(user);
+
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
 };
 
-// إضافة دالة الحذف المباشر والسحابي للمستخدمين
+// حذف مستخدم من النظام
 export const deleteSystemUser = async (id) => {
-  try {
-    const { error } = await supabase.from('users').delete().eq('id', id);
-    if (error) throw error;
-  } catch (e) {
-    console.error("خطأ في حذف المستخدم سحابياً:", e);
-  }
   const db = await initDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(USERS_STORE, 'readwrite');
     const store = transaction.objectStore(USERS_STORE);
     const request = store.delete(id);
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+};
+
+// ==========================================
+// ثانياً: دوال إدارة بيانات الطلاب
+// ==========================================
+
+// جلب جميع الطلاب
+export const getAllStudents = async () => {
+  const db = await initDB();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STUDENTS_STORE, 'readonly');
+    const store = transaction.objectStore(STUDENTS_STORE);
+    const request = store.getAll();
+
+    request.onsuccess = () => resolve(request.result || []);
+    request.onerror = () => reject(request.error);
+  });
+};
+
+// إضافة أو تحديث بيانات طالب
+export const addStudent = async (student) => {
+  const db = await initDB();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STUDENTS_STORE, 'readwrite');
+    const store = transaction.objectStore(STUDENTS_STORE);
+    const request = store.put(student);
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+};
+
+// حذف طالب من النظام
+export const deleteStudent = async (id) => {
+  const db = await initDB();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STUDENTS_STORE, 'readwrite');
+    const store = transaction.objectStore(STUDENTS_STORE);
+    const request = store.delete(id);
+
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
