@@ -71,7 +71,6 @@ export default function App() {
     }
   };
 
-  // التحقق من حالة تسجيل الدخول للتوجه لوحة التحكم مباشرة
   if (isLoggedIn) {
     return (
       <DashboardSection 
@@ -83,7 +82,6 @@ export default function App() {
     );
   }
 
-  // واجهة العرض الرئيسية للموقع قبل تسجيل الدخول
   return (
     <div className="shorouk-container">
       
@@ -163,18 +161,14 @@ export default function App() {
             </div>
           </div>
         </div>
-        {/* ... بقية الأقسام السابقة ... */}
-        
-      </div> {/* إغلاق حاوية shorouk-content */}
 
-      {/* شريط الحقوق السفلي باللون الأزرق والأسود العصري */}
+      </div>
+
+      {/* شريط الحقوق السفلي العصري الأزرق والأسود */}
       <footer className="shorouk-footer">
         <p>جميع الحقوق محفوظة مدرسة الشروق ( أبو حلا ) 📞 01149169346</p>
       </footer>
 
-    </div> {/* إغلاق حاوية shorouk-container الرئيسية */}
-
-      </div>
     </div>
   );
 }
