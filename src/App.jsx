@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import DashboardSection from './components/DashboardSection';
-import { getAllSystemUsers } from './db';
+import { getAllSystemUsers, addSystemUser, deleteSystemUser } from './db';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('school_isLoggedIn') === 'true');
@@ -14,56 +14,73 @@ export default function App() {
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // قائمة المستخدمين الافتراضية وبها حسابك الرئيسي
-  const [usersList, setUsersList] = useState([
-    { 
-      id: 1, 
-      name: "عثمان صديق", 
-      loginName: "admin", 
-      role: "osman", 
-      pin: "1234", 
-      permissions: { students: true, classes: true, teachers: true, finance: true, results: true } 
-    }
-  ]);
+  // الحساب الرئيسي الافتراضي لك لتشغيل النظام لأول مرة
+  const adminProfile = { 
+    id: 1, 
+    name: "عثمان صديق", 
+    loginName: "admin", 
+    role: "osman", 
+    pin: "198234", 
+    permissions: { students: true, classes: true, teachers: true, finance: true, results: true } 
+  };
+
+  const [usersList, setUsersList] = useState([]);
 
   useEffect(() => { 
     if (isLoggedIn) localStorage.setItem('school_activeTab', activeTab); 
   }, [activeTab, isLoggedIn]);
 
+  // جلب المستخدمين الفعليين من قاعدة البيانات المحلية عند تشغيل التطبيق
+  const loadSystemUsers = async () => {
+    try {
+      const u = await getAllSystemUsers();
+      // إذا كانت قاعدة البيانات فارغة تماماً، يتم زرع حسابك كأدمن تلقائياً لتتمكن من الدخول دائماً
+      if (!u || u.length === 0) {
+        await addSystemUser(adminProfile);
+        setUsersList([adminProfile]);
+      } else {
+        setUsersList(u);
+      }
+    } catch (e) {
+      console.error("خطأ في جلب بيانات المستخدمين:", e);
+    }
+  };
+
   useEffect(() => { 
-    const load = async () => { 
-      try { 
-        const u = await getAllSystemUsers(); 
-        if (u && u.length > 0) setUsersList(u); 
-      } catch (e) {
-        console.error("خطأ في جلب البيانات:", e);
-      } 
-    }; 
-    load(); 
+    loadSystemUsers(); 
   }, [isLoggedIn]);
 
+  // دالة تحديث وحفظ صلاحيات المستخدمين دائمياً عند التعديل داخل لوحة التحكم
+  const handlePermissionChange = async (updatedUser) => {
+    try {
+      await addSystemUser(updatedUser); 
+      await loadSystemUsers(); 
+      alert("تم تحديث وحفظ صلاحيات المستخدم بنجاح 💾");
+    } catch (error) {
+      alert("تعذر حفظ التعديلات");
+    }
+  };
+
+  // دالة حذف مستخدم نهائياً من اللوحة وقاعدة البيانات
+  const handleUserDelete = async (userId) => {
+    try {
+      await deleteSystemUser(userId);
+      await loadSystemUsers();
+      alert("تم حذف المستخدم بنجاح من النظام 🗑️");
+    } catch (error) {
+      alert("تعذر حذف المستخدم");
+    }
+  };
+
+  // دالة تسجيل الدخول الرسمية والوحيدة عبر الحقول العلوية
   const handleLogin = async (e) => {
     e.preventDefault(); 
     setIsSubmitting(true);
     try {
-      // 💡 الحل المضمون: التحقق من حساب الأدمن الرئيسي الخاص بك وتمرير الكائن الفردي مباشرة [0]
-      if (username.trim().toLowerCase() === 'admin' && password.trim() === '198234') {
-        const adminUser = usersList[0]; 
-        setCurrentUser(adminUser); 
-        setIsLoggedIn(true); 
-        setActiveTab('empty');
-        localStorage.setItem('school_isLoggedIn', 'true'); 
-        localStorage.setItem('school_currentUser', JSON.stringify(adminUser)); 
-        localStorage.setItem('school_activeTab', 'empty');
-        setIsSubmitting(false);
-        return; 
-      }
-
-      // التحقق لبقية المستخدمين من السحابة في حال وجودهم
-      const cloudUsers = await getAllSystemUsers();
-      const pool = (cloudUsers && cloudUsers.length > 0) ? cloudUsers : usersList;
+      const pool = await getAllSystemUsers();
+      const currentPool = (pool && pool.length > 0) ? pool : usersList;
       
-      const found = pool.find(u => 
+      const found = currentPool.find(u => 
         u && 
         String(u.loginName || '').trim().toLowerCase() === username.trim().toLowerCase() && 
         String(u.pin || '').trim() === password.trim()
@@ -80,29 +97,28 @@ export default function App() {
         alert("بيانات الدخول غير صحيحة!"); 
       }
     } catch (error) {
-      alert("حدث خطأ في الاتصال!");
+      alert("حدث خطأ أثناء التحقق من البيانات!");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // التوجه مباشرة إلى لوحة التحكم عند نجاح الدخول
   if (isLoggedIn) {
     return (
       <DashboardSection 
         selectedUser={currentUser} 
-        handlePermissionChange={() => {}} 
+        handlePermissionChange={handlePermissionChange} 
+        handleUserDelete={handleUserDelete}
         playHover={() => {}} 
         handleLogout={() => { setIsLoggedIn(false); localStorage.clear(); }} 
       />
     );
   }
 
-  // الواجهة الترحيبية الخارجية للموقع قبل الدخول
   return (
     <div className="shorouk-container">
       
-      {/* البار العلوي الثابت */}
+      {/* البار العلوي الثابت وتفاصيل تسجيل الدخول */}
       <div className="shorouk-header">
         <div className="shorouk-logo-zone">
           <div className="shorouk-logo-wrapper">
@@ -128,10 +144,9 @@ export default function App() {
         </form>
       </div>
 
-      {/* المحتوى الرئيسي للموقع */}
+      {/* المحتوى الرئيسي للواجهة */}
       <div className="shorouk-content">
         
-        {/* قسم من نحن */}
         <div className="shorouk-section">
           <h2>من نحن؟</h2>
           <p>
@@ -139,7 +154,6 @@ export default function App() {
           </p>
         </div>
 
-        {/* قسم مجلس الإدارة */}
         <div className="shorouk-section">
           <h2>مجلس الإدارة الموقر</h2>
           <div className="shorouk-grid grid-admin">
@@ -162,26 +176,8 @@ export default function App() {
           </div>
         </div>
 
-        {/* قسم الأهداف الاستراتيجية */}
-        <div className="shorouk-section">
-          <h2>أهدافنا الإستراتيجية</h2>
-          <div className="shorouk-grid grid-goals">
-            <div className="goal-card">
-              <div style={{ fontSize: '18px', marginBottom: '4px' }}>🎓</div>
-              <h3>التميز الأكاديمي</h3>
-              <p>تقديم مناهج قوية ومطورة تنمي التفكير والابتكار.</p>
-            </div>
-            <div className="goal-card">
-              <div style={{ fontSize: '18px', marginBottom: '4px' }}>🤝</div>
-              <h3>القيم والأخلاق</h3>
-              <p>بناء بيئة تربوية تعزز التعاون والاحترام المتبادل بين الطلاب.</p>
-            </div>
-          </div>
-        </div>
-
       </div>
 
-      {/* شريط الحقوق السفلي الموحد وعالي المتانة */}
       <footer className="shorouk-footer">
         <p>جميع الحقوق محفوظة مدرسة الشروق ( أبو حلا ) 📞 01149169346</p>
       </footer>
