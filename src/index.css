@@ -1,10 +1,45 @@
-:root {
+/* إجبار النظام بالكامل على الثيم الفاتح المريح للعين */
+:root, html, body {
   background-color: #f4f7f5 !important;
+  background: linear-gradient(135deg, #f4f7f5 0%, #e9efe3 100%) !important;
   color: #2d3748 !important;
-}
-body, html {
   margin: 0;
   padding: 0;
-  background-color: #f4f7f5 !important;
-  background: #f4f7f5 !important;
+}
+
+/* تفتيح خلفية الحاوية الرئيسية للموقع */
+.shorouk-container { 
+    background: linear-gradient(135deg, #f4f7f5 0%, #e9efe3 100%) !important; 
+}
+
+/* إظهار وتوضيح العناوين الرئيسية (من نحن، مجلس الإدارة، أهدافنا) */
+.shorouk-section h2 { 
+    color: #2d6a4f !important; 
+    border-right-color: #2d6a4f !important;
+}
+
+/* إظهار فقرات النصوص المكتوبة وتلوينها بالأخضر الداكن المريح */
+.shorouk-section p { 
+    color: #4a5568 !important; 
+}
+
+/* إظهار الكلمات المميزة باللون البرتقالي الدافئ بدلاً من الأصفر المختفي */
+.highlight-text { 
+    color: #b45309 !important; 
+}
+
+/* تعديل نصوص بطاقات الإدارة لتظهر بوضوح */
+.admin-card span { 
+    color: #718096 !important; 
+}
+.admin-card strong { 
+    color: #1a202c !important; 
+}
+.admin-card:nth-child(3) strong, .admin-card:nth-child(4) strong { 
+    color: #2d6a4f !important; 
+}
+
+/* تعديل نصوص بطاقات الأهداف الإستراتيجية */
+.goal-card p { 
+    color: #4a5568 !important; 
 }
