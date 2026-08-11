@@ -9,7 +9,6 @@ export default function StudentsSection() {
   const [selectedViewClass, setSelectedViewClass] = useState('الثالث ثانوي - المساق العلمي');
   const [selectedViewGender, setSelectedViewGender] = useState('ذكور');
 
-  // حالات نافذة الإدخال الجديدة المدمجة
   const [newName, setNewName] = useState('');
   const [newClass, setNewClass] = useState('الأول ابتدائي');
   const [newGender, setNewGender] = useState('ذكور');
@@ -77,7 +76,6 @@ export default function StudentsSection() {
   return (
     <div style={{ padding: '15px 10px', direction: 'rtl', fontFamily: 'system-ui, sans-serif' }}>
       
-      {/* صف الأزرار الرئيسي */}
       <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', marginBottom: '30px', flexWrap: 'wrap' }}>
         <button 
           onClick={() => setIsModalOpen(true)}
@@ -94,7 +92,6 @@ export default function StudentsSection() {
         </button>
       </div>
 
-      {/* قسم الفلترة والجدول */}
       {showQuerySection && (
         <div style={{ background: '#fff', padding: '20px', borderRadius: '16px', border: '1px solid #e3e6f0', boxShadow: '0 4px 12px rgba(0,0,0,0.03)', marginBottom: '30px', overflowX: 'auto' }}>
           <h3 style={{ marginTop: 0, color: '#15345d', marginBottom: '20px', fontSize: '17px', fontWeight: '800' }}>🔍 فلترة وبحث مخصص في قوائم الطلاب</h3>
@@ -151,7 +148,6 @@ export default function StudentsSection() {
         </div>
       )}
 
-      {/* نافذة إضافة طالب منبثقة المدمجة */}
       {isModalOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '15px' }}>
           <div style={{ background: '#fff', width: '100%', maxWidth: '450px', borderRadius: '24px', padding: '25px', boxSizing: 'border-box', boxShadow: '0 20px 40px rgba(0,0,0,0.15)' }}>
