@@ -14,22 +14,59 @@
   --highlight-amber: #b45309;   /* لون التمييز للمراحل الدراسية */
 }
 
-/* التنسيقات العامة الهيكلية */
+/* التنسيقات العامة والهيكلية */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
 .shorouk-container {
   background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
   min-height: 100vh;
   width: 100%;
 }
 
+/* إصلاح الهيدر ليصبح مرناً وموزعاً على الطرفين */
 .shorouk-header {
   background: var(--white);
   border-bottom: 1px solid #dee5e0;
   padding: 15px 5%;
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* تنسيق منطقة الشعار والاسم */
+.shorouk-logo-zone {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .shorouk-logo-wrapper {
   border: 1px solid var(--border-light);
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fafafa;
+  overflow: hidden;
+}
+
+.shorouk-logo-wrapper img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
 
 .shorouk-title-wrapper h1 {
@@ -45,41 +82,80 @@
   font-size: 11px;
 }
 
+/* تنسيق نموذج تسجيل الدخول ليكون في سطر واحد متناسق */
+.shorouk-login-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .shorouk-login-form input {
   background: var(--white);
   color: #334155;
   border: 1px solid #cbd5e1;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+  width: 160px;
+}
+
+.shorouk-login-form input:focus {
+  border-color: var(--primary-green);
 }
 
 .shorouk-login-form button {
   background: var(--primary-green);
   color: var(--white);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.shorouk-login-form button:hover {
+  background: var(--primary-dark);
 }
 
 .shorouk-checking {
   color: var(--text-muted);
+  font-size: 13px;
 }
 
+/* المحتوى الرئيسي للموقع */
 .shorouk-content {
-  padding: 30px 5%;
+  padding: 40px 5%;
   display: flex;
   flex-direction: column;
+  gap: 30px;
   color: var(--text-dark);
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.shorouk-section {
+  background: rgba(255, 255, 255, 0.4);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
 .shorouk-section h2 {
   color: var(--primary-green);
-  border-right: 3px solid var(--primary-green);
-  margin: 0 0 10px 0;
+  border-right: 4px solid var(--primary-green);
+  margin: 0 0 15px 0;
   font-size: 18px;
   font-weight: 700;
-  padding-right: 8px;
+  padding-right: 10px;
 }
 
 .shorouk-section p {
   color: var(--text-body);
-  line-height: 1.6;
+  line-height: 1.7;
   font-size: 14px;
   margin: 0;
 }
@@ -89,19 +165,27 @@
   font-weight: 600;
 }
 
+/* تنسيق شبكة البطاقات لجعلها متجاوبة ومصطفة بشكل صحيح */
+.shorouk-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
 .admin-card {
   background: var(--white);
   border: 1px solid var(--border-light);
-  padding: 12px 15px;
+  padding: 15px;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
 }
 
 .admin-card span {
   color: var(--text-light);
   display: block;
   font-size: 11px;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 
 .admin-card strong {
@@ -117,21 +201,21 @@
 .goal-card {
   background: var(--white);
   border: 1px solid var(--border-light);
-  padding: 15px;
+  padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
 }
 
 .goal-card h3 {
-  margin: 0 0 4px 0;
-  font-size: 14px;
+  margin: 10px 0 6px 0;
+  font-size: 15px;
   color: var(--primary-green);
   font-weight: 700;
 }
 
 .goal-card p {
   margin: 0;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-body);
-  line-height: 1.4;
+  line-height: 1.5;
 }
