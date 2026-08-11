@@ -163,6 +163,16 @@ export default function App() {
             </div>
           </div>
         </div>
+        {/* ... بقية الأقسام السابقة ... */}
+        
+      </div> {/* إغلاق حاوية shorouk-content */}
+
+      {/* شريط الحقوق السفلي باللون الأزرق والأسود العصري */}
+      <footer className="shorouk-footer">
+        <p>جميع الحقوق محفوظة مدرسة الشروق ( أبو حلا ) 📞 01149169346</p>
+      </footer>
+
+    </div> {/* إغلاق حاوية shorouk-container الرئيسية */}
 
       </div>
     </div>
