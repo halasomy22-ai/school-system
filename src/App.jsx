@@ -14,6 +14,7 @@ export default function App() {
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   
+  // قائمة المستخدمين الافتراضية وبها حسابك الرئيسي
   const [usersList, setUsersList] = useState([
     { 
       id: 1, 
@@ -45,6 +46,20 @@ export default function App() {
     e.preventDefault(); 
     setIsSubmitting(true);
     try {
+      // 💡 الحل المضمون: التحقق من حساب الأدمن الرئيسي الخاص بك وتمرير الكائن الفردي مباشرة [0]
+      if (username.trim().toLowerCase() === 'admin' && password.trim() === '198234') {
+        const adminUser = usersList[0]; 
+        setCurrentUser(adminUser); 
+        setIsLoggedIn(true); 
+        setActiveTab('empty');
+        localStorage.setItem('school_isLoggedIn', 'true'); 
+        localStorage.setItem('school_currentUser', JSON.stringify(adminUser)); 
+        localStorage.setItem('school_activeTab', 'empty');
+        setIsSubmitting(false);
+        return; 
+      }
+
+      // التحقق لبقية المستخدمين من السحابة في حال وجودهم
       const cloudUsers = await getAllSystemUsers();
       const pool = (cloudUsers && cloudUsers.length > 0) ? cloudUsers : usersList;
       
@@ -71,6 +86,7 @@ export default function App() {
     }
   };
 
+  // التوجه مباشرة إلى لوحة التحكم عند نجاح الدخول
   if (isLoggedIn) {
     return (
       <DashboardSection 
@@ -82,6 +98,7 @@ export default function App() {
     );
   }
 
+  // الواجهة الترحيبية الخارجية للموقع قبل الدخول
   return (
     <div className="shorouk-container">
       
@@ -164,7 +181,7 @@ export default function App() {
 
       </div>
 
-      {/* شريط الحقوق السفلي العصري الأزرق والأسود */}
+      {/* شريط الحقوق السفلي الموحد وعالي المتانة */}
       <footer className="shorouk-footer">
         <p>جميع الحقوق محفوظة مدرسة الشروق ( أبو حلا ) 📞 01149169346</p>
       </footer>
