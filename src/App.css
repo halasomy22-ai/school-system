@@ -1,24 +1,24 @@
 * { box-sizing: border-box; }
-body, html { margin: 0; padding: 0; width: 100%; height: 100%; }
+body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #f4f7f5; }
 
-/* 🌟 خلفية فاتحة ومريحة جدًا تمزج بين الأبيض العاجي والأخضر الباستيل الناعم */
+/* الخلفية الفاتحة المريحة للعين */
 .shorouk-container { 
     display: flex; 
     flex-direction: column; 
     min-height: 100vh; 
     width: 100%; 
-    background: linear-gradient(135deg, #f4f7f5 0%, #e9efe3 100%); 
+    background: linear-gradient(135deg, #f4f7f5 0%, #e9efe3 100%) !important; 
     direction: rtl; 
     font-family: system-ui, sans-serif; 
 }
 
-/* 🌟 الهيدر باللون الأبيض النقي لإعطاء اتساع ووضوح للموقع */
+/* الهيدر الأبيض النقي */
 .shorouk-header { 
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
     padding: 15px 5%; 
-    background: #ffffff; 
+    background: #ffffff !important; 
     border-bottom: 1px solid #dee5e0; 
     flex-wrap: wrap; 
     gap: 15px; 
@@ -30,50 +30,52 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; }
 .shorouk-logo-wrapper { width: 50px; height: 50px; background: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; padding: 2px; overflow: hidden; flex-shrink: 0; border: 1px solid #e2e8f0; }
 .shorouk-logo-wrapper img { width: 100%; height: 100%; object-fit: contain; }
 
-/* 🌟 خطوط داكنة واحترافية بلون أخضر عشبي ملكي غامق لسهولة القراءة */
-.shorouk-title-wrapper h1 { margin: 0; font-size: 18px; font-weight: 800; color: #1e4632; line-height: 1.2; }
-.shorouk-title-wrapper p { margin: 2px 0 0 0; font-size: 11px; color: #627d6f; }
+/* ألوان النصوص في الهيدر */
+.shorouk-title-wrapper h1 { margin: 0; font-size: 18px; font-weight: 800; color: #1e4632 !important; line-height: 1.2; }
+.shorouk-title-wrapper p { margin: 2px 0 0 0; font-size: 11px; color: #627d6f !important; }
 
-/* 🌟 حقول تسجيل الدخول مريحة وواضحة */
+/* حقول تسجيل الدخول */
 .shorouk-login-form { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.shorouk-login-form input { padding: 8px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; outline: none; font-size: 13px; width: 120px; text-align: right; }
+.shorouk-login-form input { padding: 8px 12px; border-radius: 6px; border: 1px solid #cbd5e1 !important; background: #ffffff !important; color: #334155 !important; outline: none; font-size: 13px; width: 120px; text-align: right; }
+.shorouk-login-form input::placeholder { color: #94a3b8; }
 
-/* 🌟 زر دخول بارز بلون أخضر مريح ومتناسق */
-.shorouk-login-form button { padding: 8px 16px; background: #2d6a4f; color: #ffffff; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; transition: background 0.2s; }
-.shorouk-login-form button:hover { background: #1b4332; }
-.shorouk-checking { font-size: 13px; color: #627d6f; padding: 8px; font-weight: 600; }
+/* زر الدخول الأخضر */
+.shorouk-login-form button { padding: 8px 16px; background: #2d6a4f !important; color: #ffffff !important; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; transition: background 0.2s; }
+.shorouk-login-form button:hover { background: #1b4332 !important; }
+.shorouk-checking { font-size: 13px; color: #627d6f !important; padding: 8px; font-weight: 600; }
 
-.shorouk-content { flex: 1; padding: 30px 5%; display: flex; flex-direction: column; justify-content: center; color: #2d3748; width: 100%; }
+.shorouk-content { flex: 1; padding: 30px 5%; display: flex; flex-direction: column; justify-content: center; color: #2d3748 !important; width: 100%; }
 .shorouk-section { margin-bottom: 25px; width: 100%; max-width: 900px; margin-left: auto; margin-right: auto; text-align: right; }
 
-.shorouk-section h2 { font-size: 18px; color: #2d6a4f; margin: 0 0 10px 0; font-weight: 700; border-right: 3px solid #2d6a4f; padding-right: 8px; }
-.shorouk-section p { margin: 0; color: #4a5568; line-height: 1.6; font-size: 14px; }
-.highlight-text { color: #b45309; font-weight: 600; } /* لون برتقالي دافئ للكلمات المفتاحية */
+/* ألوان العناوين الجانبية */
+.shorouk-section h2 { font-size: 18px; color: #2d6a4f !important; margin: 0 0 10px 0; font-weight: 700; border-right: 3px solid #2d6a4f; padding-right: 8px; }
+.shorouk-section p { margin: 0; color: #4a5568 !important; line-height: 1.6; font-size: 14px; }
+.highlight-text { color: #b45309 !important; font-weight: 600; }
 
 .shorouk-grid { display: grid; gap: 15px; width: 100%; margin-top: 5px; }
 .grid-admin { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
 .grid-goals { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
 
-/* 🌟 كروت بيضاء نظيفة بظلال خفيفة جدًا تمنح الموقع مظهرًا عصريًا */
-.admin-card { background: #ffffff; padding: 12px 15px; border-radius: 8px; border: 1px solid #e2e8f0; text-align: right; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
-.admin-card span { font-size: 11px; color: #718096; display: block; margin-bottom: 2px; }
-.admin-card strong { color: #1a202c; font-size: 13px; font-weight: 700; }
-.admin-card:nth-child(3) strong, .admin-card:nth-child(4) strong { color: #2d6a4f; }
+/* الكروت البيضاء النظيفة */
+.admin-card { background: #ffffff !important; padding: 12px 15px; border-radius: 8px; border: 1px solid #e2e8f0 !important; text-align: right; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.admin-card span { font-size: 11px; color: #718096 !important; display: block; margin-bottom: 2px; }
+.admin-card strong { color: #1a202c !important; font-size: 13px; font-weight: 700; }
+.admin-card:nth-child(3) strong, .admin-card:nth-child(4) strong { color: #2d6a4f !important; }
 
-.goal-card { background: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; text-align: right; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03); }
+.goal-card { background: #ffffff !important; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0 !important; text-align: right; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
 .goal-card div { font-size: 18px; margin-bottom: 4px; }
-.goal-card h3 { margin: 0 0 4px 0; font-size: 14px; color: #2d6a4f; font-weight: 700; }
-.goal-card p { margin: 0; font-size: 11px; color: #4a5568; line-height: 1.4; }
+.goal-card h3 { margin: 0 0 4px 0; font-size: 14px; color: #2d6a4f !important; font-weight: 700; }
+.goal-card p { margin: 0; font-size: 11px; color: #4a5568 !important; line-height: 1.4; }
 
-/* 🌟 فوتر رمادي فاتح هادئ ينهي تصميم الصفحة بنعومة */
-.shorouk-footer { background: #eef2f0; border-top: 1px solid #dee5e0; padding: 15px 5%; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 11px; color: #52665a; width: 100%; align-items: center; }
+/* الفوتر الرمادي الفاتح */
+.shorouk-footer { background: #eef2f0 !important; border-top: 1px solid #dee5e0; padding: 15px 5%; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 11px; color: #52665a !important; width: 100%; align-items: center; }
 .footer-contacts { display: flex; gap: 15px; flex-wrap: wrap; }
 .footer-rights { text-align: left; }
 
 @media (max-width: 640px) {
   .shorouk-header { flex-direction: column; align-items: flex-start; padding: 15px; }
   .shorouk-login-form { width: 100%; margin-top: 10px; justify-content: flex-start; }
-  .shorouk-login-form input { flex: 1; min-width: 100px; background: #f8fafc; }
+  .shorouk-login-form input { flex: 1; min-width: 100px; background: #f8fafc !important; }
   .shorouk-login-form button { width: 100%; text-align: center; }
   .shorouk-footer { flex-direction: column; align-items: flex-start; gap: 10px; }
   .footer-rights { text-align: right; width: 100%; }
