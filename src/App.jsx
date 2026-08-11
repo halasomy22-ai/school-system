@@ -21,7 +21,7 @@ export default function App() {
       name: "عثمان صديق", 
       loginName: "admin", 
       role: "osman", 
-      pin: "198234", 
+      pin: "1234", 
       permissions: { students: true, classes: true, teachers: true, finance: true, results: true } 
     }
   ]);
