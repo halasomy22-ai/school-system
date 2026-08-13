@@ -4,7 +4,7 @@
 // ==========================================
 
 // ⚙️ ضع هنا البيانات الخاصة بحسابك ومستودعك والـ Token الذي استخرجته
-const GITHUB_TOKEN = "ضع_هنا_الرمز_السري_الذي_نسخته"; 
+const GITHUB_TOKEN = "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"; 
 const REPO_OWNER = "halasomy22-ai"; // اسم حسابك كما يظهر بالصورة
 const REPO_NAME = "school-system";   // اسم المستودع كما يظهر بالصورة
 const FILE_PATH = "db.json";         // اسم الملف الذي أنشأناه في الخطوة الأولى
