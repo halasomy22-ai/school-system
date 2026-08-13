@@ -13,10 +13,10 @@ export default function App() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   
   // الحساب الرئيسي الافتراضي لك لتشغيل النظام لأول مرة
   const adminProfile = { 
-    id: 1, 
     name: "عثمان صديق", 
     loginName: "osman", 
     role: "admin", 
@@ -30,25 +30,30 @@ export default function App() {
     if (isLoggedIn) localStorage.setItem('school_activeTab', activeTab); 
   }, [activeTab, isLoggedIn]);
 
-  // جلب المستخدمين الفعليين من قاعدة البيانات المحلية عند تشغيل التطبيق
+  // جلب المستخدمين من Firebase عند تشغيل التطبيق
   const loadSystemUsers = async () => {
     try {
+      setIsLoading(true);
       const u = await getAllSystemUsers();
       // إذا كانت قاعدة البيانات فارغة تماماً، يتم زرع حسابك كأدمن تلقائياً لتتمكن من الدخول دائماً
       if (!u || u.length === 0) {
         await addSystemUser(adminProfile);
-        setUsersList([adminProfile]);
+        setUsersList([{ ...adminProfile, id: 'admin' }]);
       } else {
         setUsersList(u);
       }
     } catch (e) {
       console.error("خطأ في جلب بيانات المستخدمين:", e);
+      alert('خطأ في الاتصال بقاعدة البيانات. تأكد من اتصالك بالإنترنت.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  // تحميل المستخدمين عند بدء التطبيق
   useEffect(() => { 
     loadSystemUsers(); 
-  }, [isLoggedIn]);
+  }, []);
 
   // دالة تحديث وحفظ صلاحيات المستخدمين دائمياً عند التعديل داخل لوحة التحكم
   const handlePermissionChange = async (updatedUser) => {
@@ -57,6 +62,7 @@ export default function App() {
       await loadSystemUsers(); 
       alert("تم تحديث وحفظ صلاحيات المستخدم بنجاح 💾");
     } catch (error) {
+      console.error('خطأ في حفظ التعديلات:', error);
       alert("تعذر حفظ التعديلات");
     }
   };
@@ -68,6 +74,7 @@ export default function App() {
       await loadSystemUsers();
       alert("تم حذف المستخدم بنجاح من النظام 🗑️");
     } catch (error) {
+      console.error('خطأ في حذف المستخدم:', error);
       alert("تعذر حذف المستخدم");
     }
   };
@@ -77,6 +84,7 @@ export default function App() {
     e.preventDefault(); 
     setIsSubmitting(true);
     try {
+      // جلب أحدث بيانات من Firebase
       const pool = await getAllSystemUsers();
       const currentPool = (pool && pool.length > 0) ? pool : usersList;
       
@@ -93,15 +101,29 @@ export default function App() {
         localStorage.setItem('school_isLoggedIn', 'true'); 
         localStorage.setItem('school_currentUser', JSON.stringify(found)); 
         localStorage.setItem('school_activeTab', 'empty');
+        setUsername('');
+        setPassword('');
       } else { 
         alert("بيانات الدخول غير صحيحة!"); 
       }
     } catch (error) {
+      console.error('خطأ في التحقق:', error);
       alert("حدث خطأ أثناء التحقق من البيانات!");
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="shorouk-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '48px', marginBottom: '20px' }}>⏳</div>
+          <h2 style={{ color: '#0e1e38' }}>جاري التحميل...</h2>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoggedIn) {
     return (
@@ -134,8 +156,8 @@ export default function App() {
           </div>
         </div>
         <form onSubmit={handleLogin} className="shorouk-login-form">
-          <input type="text" placeholder="اسم المستخدم" value={username} onChange={e => setUsername(e.target.value)} required />
-          <input type="password" placeholder="كلمة المرور" value={password} onChange={e => setPassword(e.target.value)} required />
+          <input type="text" placeholder="اسم المستخدم" value={username} onChange={e => setUsername(e.target.value)} required disabled={isSubmitting} />
+          <input type="password" placeholder="كلمة المرور" value={password} onChange={e => setPassword(e.target.value)} required disabled={isSubmitting} />
           {!isSubmitting ? (
             <button type="submit">تسجيل الدخول</button>
           ) : (
@@ -150,7 +172,7 @@ export default function App() {
         <div className="shorouk-section">
           <h2>من نحن؟</h2>
           <p>
-            صرح تعليمي متميز يسعى لتقديم بيئة تربوية ملهمة تواكب أحدث المعايير الأكاديمية لجميع المراحل (<span className="highlight-text">حضانة - ابتدائي - متوسط - ثانوي</span>)، لتنشئة جيل مبدع ومتمسك بقيمه الأخلاقية.
+            صرح تعليمي متميز يسعى لتقديم بيئة تربوية ملهمة تواكب أحدث المعايير الأكاديمية لجميع المراحل
           </p>
         </div>
 
