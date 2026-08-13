@@ -21,8 +21,8 @@ const DashboardSection = ({
 
   // بناء أزرار التنقل وتصفيتها برمجياً بناءً على صلاحيات المستخدم الممررة
   const allNavItems = [
-    // 🔒 التعديل المطلوب: جعل زر لوحة التحكم حصرياً وخاصاً بحسابك أنت فقط كأدمن (admin / osman) ويختفي تماماً عن بقية الحسابات الإدارية
-    { key: 'home', label: 'لوحة التحكم', permission: selectedUser?.role === 'osman' || selectedUser?.loginName === 'admin' }, 
+    // ✅ تم الإصلاح: الزر يظهر الآن حصرياً إذا كان الـ role هو admin أو الـ loginName هو osman (حسابك الشخصي)
+    { key: 'home', label: 'لوحة التحكم', permission: selectedUser?.role === 'admin' || selectedUser?.loginName === 'osman' }, 
     { key: 'students', label: 'الطلاب', permission: userPermissions.students },
     { key: 'classes', label: 'الفصول', permission: userPermissions.classes },
     { key: 'teachers', label: 'المعلمين', permission: userPermissions.teachers },
@@ -100,8 +100,8 @@ const DashboardSection = ({
           </div>
         )}
 
-        {/* زر لوحة التحكم يظهر فقط وحصرياً للأدمن الأساسي لعرض كرت الترحيب وإدارة المستخدمين الجدد وحذفهم */}
-        {activeTab === 'home' && (selectedUser?.role === 'osman' || selectedUser?.loginName === 'admin') && (
+        {/* ✅ تم الإصلاح: زر لوحة التحكم يفتح الآن حصرياً للأدمن الأساسي بعد تصحيح الشروط المعكوسة */}
+        {activeTab === 'home' && (selectedUser?.role === 'admin' || selectedUser?.loginName === 'osman') && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', width: '100%' }}>
             <div style={{ width: '100%', borderRadius: '32px', background: 'linear-gradient(135deg, #0b192e 0%, #15345d 100%)', padding: '40px', boxSizing: 'border-box', textAlign: 'center', boxShadow: '0 15px 30px rgba(0,0,0,0.1)' }}>
               <h1 style={{ color: '#f6c23e', fontSize: '32px', fontWeight: '900', margin: '0 0 10px 0', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>مدارس الشروق السودانية - أسوان</h1>
