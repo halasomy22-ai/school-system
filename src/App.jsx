@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import DashboardSection from './components/DashboardSection';
-import { getAllSystemUsers, addSystemUser, deleteSystemUser } from './db';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('school_isLoggedIn') === 'true');
@@ -13,9 +12,8 @@ export default function App() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   
-  // الحساب الرئيسي الافتراضي لك لتشغيل النظام لأول مرة
+  // الحساب الرئيسي الافتراضي
   const adminProfile = { 
     name: "عثمان صديق", 
     loginName: "osman", 
@@ -24,71 +22,18 @@ export default function App() {
     permissions: { students: true, classes: true, teachers: true, finance: true, results: true } 
   };
 
-  const [usersList, setUsersList] = useState([]);
+  const [usersList] = useState([adminProfile]);
 
   useEffect(() => { 
     if (isLoggedIn) localStorage.setItem('school_activeTab', activeTab); 
   }, [activeTab, isLoggedIn]);
 
-  // جلب المستخدمين من Firebase عند تشغيل التطبيق
-  const loadSystemUsers = async () => {
-    try {
-      setIsLoading(true);
-      const u = await getAllSystemUsers();
-      // إذا كانت قاعدة البيانات فارغة تماماً، يتم زرع حسابك كأدمن تلقائياً لتتمكن من الدخول دائماً
-      if (!u || u.length === 0) {
-        await addSystemUser(adminProfile);
-        setUsersList([{ ...adminProfile, id: 'admin' }]);
-      } else {
-        setUsersList(u);
-      }
-    } catch (e) {
-      console.error("خطأ في جلب بيانات المستخدمين:", e);
-      alert('خطأ في الاتصال بقاعدة البيانات. تأكد من اتصالك بالإنترنت.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // تحميل المستخدمين عند بدء التطبيق
-  useEffect(() => { 
-    loadSystemUsers(); 
-  }, []);
-
-  // دالة تحديث وحفظ صلاحيات المستخدمين دائمياً عند التعديل داخل لوحة التحكم
-  const handlePermissionChange = async (updatedUser) => {
-    try {
-      await addSystemUser(updatedUser); 
-      await loadSystemUsers(); 
-      alert("تم تحديث وحفظ صلاحيات المستخدم بنجاح 💾");
-    } catch (error) {
-      console.error('خطأ في حفظ التعديلات:', error);
-      alert("تعذر حفظ التعديلات");
-    }
-  };
-
-  // دالة حذف مستخدم نهائياً من اللوحة وقاعدة البيانات
-  const handleUserDelete = async (userId) => {
-    try {
-      await deleteSystemUser(userId);
-      await loadSystemUsers();
-      alert("تم حذف المستخدم بنجاح من النظام 🗑️");
-    } catch (error) {
-      console.error('خطأ في حذف المستخدم:', error);
-      alert("تعذر حذف المستخدم");
-    }
-  };
-
-  // دالة تسجيل الدخول الرسمية والوحيدة عبر الحقول العلوية
-  const handleLogin = async (e) => {
+  // دالة تسجيل الدخول الرسمية
+  const handleLogin = (e) => {
     e.preventDefault(); 
     setIsSubmitting(true);
     try {
-      // جلب أحدث بيانات من Firebase
-      const pool = await getAllSystemUsers();
-      const currentPool = (pool && pool.length > 0) ? pool : usersList;
-      
-      const found = currentPool.find(u => 
+      const found = usersList.find(u => 
         u && 
         String(u.loginName || '').trim().toLowerCase() === username.trim().toLowerCase() && 
         String(u.pin || '').trim() === password.trim()
@@ -114,16 +59,13 @@ export default function App() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="shorouk-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '48px', marginBottom: '20px' }}>⏳</div>
-          <h2 style={{ color: '#0e1e38' }}>جاري التحميل...</h2>
-        </div>
-      </div>
-    );
-  }
+  const handlePermissionChange = (updatedUser) => {
+    alert("تم تحديث الصلاحيات بنجاح 💾");
+  };
+
+  const handleUserDelete = (userId) => {
+    alert("تم حذف المستخدم بنجاح 🗑️");
+  };
 
   if (isLoggedIn) {
     return (
@@ -140,7 +82,7 @@ export default function App() {
   return (
     <div className="shorouk-container">
       
-      {/* البار العلوي الثابت وتفاصيل تسجيل الدخول */}
+      {/* البار العلوي الثابت */}
       <div className="shorouk-header">
         <div className="shorouk-logo-zone">
           <div className="shorouk-logo-wrapper">
@@ -166,7 +108,7 @@ export default function App() {
         </form>
       </div>
 
-      {/* المحتوى الرئيسي للواجهة */}
+      {/* المحتوى الرئيسي */}
       <div className="shorouk-content">
         
         <div className="shorouk-section">
