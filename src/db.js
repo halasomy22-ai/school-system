@@ -1,35 +1,22 @@
 // ==========================================
-// نظام إدارة قاعدة البيانات المحلية - مدارس الشروق
-// متصل ومستقل بالكامل ويعمل عبر جيت هوب فقط
+// نظام إدارة قاعدة البيانات - مدارس الشروق
+// متصل مع Firebase Firestore في السحابة
 // ==========================================
 
-const DB_NAME = 'ShoroukSchoolDB';
-const DB_VERSION = 1;
-const USERS_STORE = 'system_users';
-const STUDENTS_STORE = 'students_data';
+import { db } from './firebase.js';
+import { 
+  collection, 
+  getDocs, 
+  addDoc, 
+  updateDoc, 
+  deleteDoc, 
+  doc, 
+  query,
+  where 
+} from 'firebase/firestore';
 
-// 1. دالة تهيئة وتأسيس قاعدة البيانات المحلية في المتصفح
-export const initDB = () => {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-    request.onupgradeneeded = (event) => {
-      const db = event.target.result;
-      
-      // إنشاء مخزن مستخدمي النظام والصلاحيات
-      if (!db.objectStoreNames.contains(USERS_STORE)) {
-        db.createObjectStore(USERS_STORE, { keyPath: 'id', autoIncrement: true });
-      }
-      // إنشاء مخزن بيانات الطلاب
-      if (!db.objectStoreNames.contains(STUDENTS_STORE)) {
-        db.createObjectStore(STUDENTS_STORE, { keyPath: 'id', autoIncrement: true });
-      }
-    };
-
-    request.onsuccess = (event) => resolve(event.target.result);
-    request.onerror = (event) => reject(event.target.error);
-  });
-};
+const USERS_COLLECTION = 'system_users';
+const STUDENTS_COLLECTION = 'students_data';
 
 // ==========================================
 // أولاً: دوال إدارة مستخدمي النظام والصلاحيات
@@ -37,41 +24,68 @@ export const initDB = () => {
 
 // جلب جميع مستخدمي النظام
 export const getAllSystemUsers = async () => {
-  const db = await initDB();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(USERS_STORE, 'readonly');
-    const store = transaction.objectStore(USERS_STORE);
-    const request = store.getAll();
-
-    request.onsuccess = () => resolve(request.result || []);
-    request.onerror = () => reject(request.error);
-  });
+  try {
+    const usersRef = collection(db, USERS_COLLECTION);
+    const snapshot = await getDocs(usersRef);
+    const users = [];
+    snapshot.forEach(doc => {
+      users.push({ id: doc.id, ...doc.data() });
+    });
+    return users;
+  } catch (error) {
+    console.error("خطأ في جلب بيانات المستخدمين:", error);
+    throw error;
+  }
 };
 
 // إضافة أو تحديث مستخدم في النظام
 export const addSystemUser = async (user) => {
-  const db = await initDB();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(USERS_STORE, 'readwrite');
-    const store = transaction.objectStore(USERS_STORE);
-    const request = store.put(user);
-
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
+  try {
+    const usersRef = collection(db, USERS_COLLECTION);
+    
+    // إذا كان المستخدم يملك id (تحديث)
+    if (user.id) {
+      const userDocRef = doc(db, USERS_COLLECTION, user.id);
+      await updateDoc(userDocRef, user);
+      return user.id;
+    } else {
+      // إضافة مستخدم جديد
+      const docRef = await addDoc(usersRef, user);
+      return docRef.id;
+    }
+  } catch (error) {
+    console.error("خطأ في حفظ بيانات المستخدم:", error);
+    throw error;
+  }
 };
 
 // حذف مستخدم من النظام
 export const deleteSystemUser = async (id) => {
-  const db = await initDB();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(USERS_STORE, 'readwrite');
-    const store = transaction.objectStore(USERS_STORE);
-    const request = store.delete(id);
+  try {
+    const userDocRef = doc(db, USERS_COLLECTION, id);
+    await deleteDoc(userDocRef);
+    return true;
+  } catch (error) {
+    console.error("خطأ في حذف المستخدم:", error);
+    throw error;
+  }
+};
 
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
+// البحث عن مستخدم باسم الدخول
+export const findUserByLoginName = async (loginName) => {
+  try {
+    const usersRef = collection(db, USERS_COLLECTION);
+    const q = query(usersRef, where('loginName', '==', loginName));
+    const snapshot = await getDocs(q);
+    
+    if (!snapshot.empty) {
+      return { id: snapshot.docs[0].id, ...snapshot.docs[0].data() };
+    }
+    return null;
+  } catch (error) {
+    console.error("خطأ في البحث عن المستخدم:", error);
+    throw error;
+  }
 };
 
 // ==========================================
@@ -80,39 +94,47 @@ export const deleteSystemUser = async (id) => {
 
 // جلب جميع الطلاب
 export const getAllStudents = async () => {
-  const db = await initDB();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(STUDENTS_STORE, 'readonly');
-    const store = transaction.objectStore(STUDENTS_STORE);
-    const request = store.getAll();
-
-    request.onsuccess = () => resolve(request.result || []);
-    request.onerror = () => reject(request.error);
-  });
+  try {
+    const studentsRef = collection(db, STUDENTS_COLLECTION);
+    const snapshot = await getDocs(studentsRef);
+    const students = [];
+    snapshot.forEach(doc => {
+      students.push({ id: doc.id, ...doc.data() });
+    });
+    return students;
+  } catch (error) {
+    console.error("خطأ في جلب بيانات الطلاب:", error);
+    throw error;
+  }
 };
 
 // إضافة أو تحديث بيانات طالب
 export const addStudent = async (student) => {
-  const db = await initDB();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(STUDENTS_STORE, 'readwrite');
-    const store = transaction.objectStore(STUDENTS_STORE);
-    const request = store.put(student);
-
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
+  try {
+    const studentsRef = collection(db, STUDENTS_COLLECTION);
+    
+    if (student.id) {
+      const studentDocRef = doc(db, STUDENTS_COLLECTION, student.id);
+      await updateDoc(studentDocRef, student);
+      return student.id;
+    } else {
+      const docRef = await addDoc(studentsRef, student);
+      return docRef.id;
+    }
+  } catch (error) {
+    console.error("خطأ في حفظ بيانات الطالب:", error);
+    throw error;
+  }
 };
 
 // حذف طالب من النظام
 export const deleteStudent = async (id) => {
-  const db = await initDB();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(STUDENTS_STORE, 'readwrite');
-    const store = transaction.objectStore(STUDENTS_STORE);
-    const request = store.delete(id);
-
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
+  try {
+    const studentDocRef = doc(db, STUDENTS_COLLECTION, id);
+    await deleteDoc(studentDocRef);
+    return true;
+  } catch (error) {
+    console.error("خطأ في حذف الطالب:", error);
+    throw error;
+  }
 };
