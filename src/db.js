@@ -1,19 +1,7 @@
 // ==========================================
 // نظام إدارة قاعدة البيانات - مدارس الشروق
-// متصل مع Firebase Firestore في السحابة
+// متصل مع LocalStorage بشكل محلي
 // ==========================================
-
-import { db } from './firebase.js';
-import { 
-  collection, 
-  getDocs, 
-  addDoc, 
-  updateDoc, 
-  deleteDoc, 
-  doc, 
-  query,
-  where 
-} from 'firebase/firestore';
 
 const USERS_COLLECTION = 'system_users';
 const STUDENTS_COLLECTION = 'students_data';
@@ -25,34 +13,31 @@ const STUDENTS_COLLECTION = 'students_data';
 // جلب جميع مستخدمي النظام
 export const getAllSystemUsers = async () => {
   try {
-    const usersRef = collection(db, USERS_COLLECTION);
-    const snapshot = await getDocs(usersRef);
-    const users = [];
-    snapshot.forEach(doc => {
-      users.push({ id: doc.id, ...doc.data() });
-    });
-    return users;
+    const users = localStorage.getItem(USERS_COLLECTION);
+    return users ? JSON.parse(users) : [];
   } catch (error) {
     console.error("خطأ في جلب بيانات المستخدمين:", error);
-    throw error;
+    return [];
   }
 };
 
 // إضافة أو تحديث مستخدم في النظام
 export const addSystemUser = async (user) => {
   try {
-    const usersRef = collection(db, USERS_COLLECTION);
+    const users = await getAllSystemUsers();
     
-    // إذا كان المستخدم يملك id (تحديث)
     if (user.id) {
-      const userDocRef = doc(db, USERS_COLLECTION, user.id);
-      await updateDoc(userDocRef, user);
-      return user.id;
+      const index = users.findIndex(u => u.id === user.id);
+      if (index !== -1) {
+        users[index] = user;
+      }
     } else {
-      // إضافة مستخدم جديد
-      const docRef = await addDoc(usersRef, user);
-      return docRef.id;
+      user.id = Date.now().toString();
+      users.push(user);
     }
+    
+    localStorage.setItem(USERS_COLLECTION, JSON.stringify(users));
+    return user.id;
   } catch (error) {
     console.error("خطأ في حفظ بيانات المستخدم:", error);
     throw error;
@@ -62,8 +47,9 @@ export const addSystemUser = async (user) => {
 // حذف مستخدم من النظام
 export const deleteSystemUser = async (id) => {
   try {
-    const userDocRef = doc(db, USERS_COLLECTION, id);
-    await deleteDoc(userDocRef);
+    const users = await getAllSystemUsers();
+    const filtered = users.filter(u => u.id !== id);
+    localStorage.setItem(USERS_COLLECTION, JSON.stringify(filtered));
     return true;
   } catch (error) {
     console.error("خطأ في حذف المستخدم:", error);
@@ -74,14 +60,8 @@ export const deleteSystemUser = async (id) => {
 // البحث عن مستخدم باسم الدخول
 export const findUserByLoginName = async (loginName) => {
   try {
-    const usersRef = collection(db, USERS_COLLECTION);
-    const q = query(usersRef, where('loginName', '==', loginName));
-    const snapshot = await getDocs(q);
-    
-    if (!snapshot.empty) {
-      return { id: snapshot.docs[0].id, ...snapshot.docs[0].data() };
-    }
-    return null;
+    const users = await getAllSystemUsers();
+    return users.find(u => u.loginName === loginName) || null;
   } catch (error) {
     console.error("خطأ في البحث عن المستخدم:", error);
     throw error;
@@ -95,32 +75,31 @@ export const findUserByLoginName = async (loginName) => {
 // جلب جميع الطلاب
 export const getAllStudents = async () => {
   try {
-    const studentsRef = collection(db, STUDENTS_COLLECTION);
-    const snapshot = await getDocs(studentsRef);
-    const students = [];
-    snapshot.forEach(doc => {
-      students.push({ id: doc.id, ...doc.data() });
-    });
-    return students;
+    const students = localStorage.getItem(STUDENTS_COLLECTION);
+    return students ? JSON.parse(students) : [];
   } catch (error) {
     console.error("خطأ في جلب بيانات الطلاب:", error);
-    throw error;
+    return [];
   }
 };
 
 // إضافة أو تحديث بيانات طالب
 export const addStudent = async (student) => {
   try {
-    const studentsRef = collection(db, STUDENTS_COLLECTION);
+    const students = await getAllStudents();
     
     if (student.id) {
-      const studentDocRef = doc(db, STUDENTS_COLLECTION, student.id);
-      await updateDoc(studentDocRef, student);
-      return student.id;
+      const index = students.findIndex(s => s.id === student.id);
+      if (index !== -1) {
+        students[index] = student;
+      }
     } else {
-      const docRef = await addDoc(studentsRef, student);
-      return docRef.id;
+      student.id = Date.now().toString();
+      students.push(student);
     }
+    
+    localStorage.setItem(STUDENTS_COLLECTION, JSON.stringify(students));
+    return student.id;
   } catch (error) {
     console.error("خطأ في حفظ بيانات الطالب:", error);
     throw error;
@@ -130,8 +109,9 @@ export const addStudent = async (student) => {
 // حذف طالب من النظام
 export const deleteStudent = async (id) => {
   try {
-    const studentDocRef = doc(db, STUDENTS_COLLECTION, id);
-    await deleteDoc(studentDocRef);
+    const students = await getAllStudents();
+    const filtered = students.filter(s => s.id !== id);
+    localStorage.setItem(STUDENTS_COLLECTION, JSON.stringify(filtered));
     return true;
   } catch (error) {
     console.error("خطأ في حذف الطالب:", error);
