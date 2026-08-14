@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+// الاستدعاء المباشر والصحيح للدوال المصلحة من ملف db.js الرئيسي
 import { getAllSystemUsers, addSystemUser, deleteSystemUser } from '../db'; 
 
 export default function UsersPermissionsSection({ handlePermissionChange = () => {}, playHover = () => {} }) {
@@ -10,6 +11,7 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
     permissions: { students: false, classes: false, teachers: false, finance: false, results: false }
   });
 
+  // دالة جلب البيانات السحابية الرسمية المعتمدة على ملف db.js
   const fetchCloudUsers = async () => {
     try {
       setLoading(true);
@@ -26,7 +28,7 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
         setSystemUsers(defaultUsers);
       }
     } catch (err) {
-      console.error(err);
+      console.error("خطأ أثناء تحديث قائمة المستخدمين:", err);
     } finally {
       setLoading(false);
     }
@@ -76,7 +78,7 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
     try {
       await addSystemUser(accountCreated);
       alert(`تم رفع حساب ${newUser.role} بنجاح إلى قاعدة البيانات السحابية!`);
-      await fetchCloudUsers(); // تحديث القائمة بالاسم الصحيح
+      await fetchCloudUsers(); 
       setNewUser({ name: '', loginName: '', pin: '', role: 'معلم', permissions: { students: false, classes: false, teachers: false, finance: false, results: false } });
     } catch (err) {
       alert("فشل رفع البيانات للسحابة");
@@ -84,7 +86,6 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
   };
 
   const handleDeleteUser = async (userId, userName) => {
-    // حماية حساب الأدمن الأساسي من الحذف بالـ id والـ loginName
     if (userId === '1' || userId === 1 || userName === 'عثمان صديق') {
       return alert("لا يمكن حذف حساب الأدمن الأساسي!");
     }
@@ -94,7 +95,7 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
       try {
         await deleteSystemUser(userId);
         alert("تم حذف المستخدم بنجاح من السحابة! 🗑️");
-        await fetchCloudUsers(); // ✅ تم الإصلاح: استدعاء الدالة الصحيحة لتحديث الشاشة فوراً
+        await fetchCloudUsers(); 
       } catch (err) {
         alert("حدث خطأ أثناء الحذف");
       }
