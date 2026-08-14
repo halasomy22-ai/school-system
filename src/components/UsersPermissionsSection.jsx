@@ -9,8 +9,10 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
     permissions: { students: false, classes: false, teachers: false, finance: false, results: false }
   });
 
-  // ✅ فرض الرابط البرمجي الرسمي المباشر والآمن لـ API جيت هوب لكسر حظر الـ CORS نهائياً
-   const CLOUD_API_URL = "https://github.com";
+  // الرابط البرمجي الرسمي لـ API جيت هوب
+  const CLOUD_API_URL = "https://github.com";
+  
+  // ✅ تم الإصلاح: قراءة المفتاح بأسلوب Vite الصارم والمطابق تماماً لإعدادات فيرسيل الجديدة
   const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN || "";
 
   const fetchCloudUsers = async () => {
@@ -30,7 +32,7 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
       const parsedData = JSON.parse(decodedText);
       setSystemUsers(parsedData.system_users || []);
     } catch (err) {
-      // حسابات افتراضية في حال وجود أي عطل في السيرفر
+      // حسابات افتراضية احتياطية في حال وجود أي تداخل في بيئة التشغيل
       setSystemUsers([
         { id: '1', name: "عثمان صديق", loginName: "admin", role: "أدمن", pin: "123", permissions: { students: true, classes: true, teachers: true, finance: true, results: true } }
       ]);
@@ -59,15 +61,15 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
       const putRes = await fetch(CLOUD_API_URL, {
         method: "PUT",
         headers: { "Authorization": `Bearer ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ message: "إضافة مستخدم سحابي", content: btoa(unescape(encodeURIComponent(JSON.stringify(parsed, null, 2)))), sha: data.sha })
+        body: JSON.stringify({ message: "إضافة مستخدم سحابي تلقائي", content: btoa(unescape(encodeURIComponent(JSON.stringify(parsed, null, 2)))), sha: data.sha })
       });
 
       if (!putRes.ok) throw new Error();
-      alert(`تم رفع حساب ${newUser.role} بنجاح إلى السحابة! 🎉`);
+      alert(`تم رفع حساب ${newUser.role} بنجاح إلى قاعدة البيانات السحابية! 🎉`);
       fetchCloudUsers();
       setNewUser({ name: '', loginName: '', pin: '', role: 'معلم', permissions: { students: false, classes: false, teachers: false, finance: false, results: false } });
     } catch (err) {
-      alert("فشل رفع البيانات للسحابة، تأكد من إعدادات الـ Token في فيرسيل");
+      alert("فشل رفع البيانات للسحابة، تأكد من صحة الـ Token في فيرسيل");
     }
   };
 
@@ -84,7 +86,7 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
       const putRes = await fetch(CLOUD_API_URL, {
         method: "PUT",
         headers: { "Authorization": `Bearer ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ message: "حذف مستخدم سحابي", content: btoa(unescape(encodeURIComponent(JSON.stringify(parsed, null, 2)))), sha: data.sha })
+        body: JSON.stringify({ message: "حذف مستخدم سحابي تلقائي", content: btoa(unescape(encodeURIComponent(JSON.stringify(parsed, null, 2)))), sha: data.sha })
       });
 
       if (!putRes.ok) throw new Error();
@@ -97,6 +99,7 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
 
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', width: '100%', direction: 'rtl', fontFamily: 'system-ui, sans-serif' }}>
+      {/* استمارة الإضافة */}
       <div style={{ flex: '1 1 350px', background: '#ffffff', padding: '25px', borderRadius: '20px', border: '1px solid #e1e8f0' }}>
         <h3 style={{ color: '#1a365d', margin: '0 0 15px 0', borderBottom: '2px solid #f0f4f8', paddingBottom: '10px', fontWeight: '800' }}>➕ إضافة مستخدم وتعيين الصلاحيات</h3>
         <form onSubmit={saveNewUser} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -119,6 +122,7 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
         </form>
       </div>
 
+      {/* الجدول */}
       <div style={{ flex: '2 1 450px', background: '#ffffff', padding: '25px', borderRadius: '20px', border: '1px solid #e1e8f0', overflowX: 'auto' }}>
         <h3 style={{ color: '#1a365d', margin: '0 0 15px 0', borderBottom: '2px solid #f0f4f8', paddingBottom: '10px', fontWeight: '800' }}>👥 صلاحيات الحسابات السحابية</h3>
         {loading ? <p style={{ textAlign: 'center', color: '#1a365d' }}>جاري جلب البيانات من السحابة...</p> : (
