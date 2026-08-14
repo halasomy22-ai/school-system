@@ -1,17 +1,17 @@
 // ==========================================
 // نظام إدارة قاعدة البيانات السحابية - مدارس الشروق
-// متصل مباشرة مع GitHub REST API (آمن ومشفر عبر السيرفر)
+// متصل مباشرة مع GitHub REST API (نسخة الإصلاح الإجباري الشامل)
 // ==========================================
 
-// قراءة الرمز السري من بيئة التشغيل السحابية (Vercel) لمنع جيت هوب من حظره تلقائياً
+// الرمز السري الفعلي والآمن من بيئة التشغيل في فيرسيل
 const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN || ""; 
 
-const REPO_OWNER = "halasomy22-ai"; // اسم حسابك على جيت هوب
-const REPO_NAME = "school-system";   // اسم المستودع
-const FILE_PATH = "db.json";         // ملف قاعدة البيانات السحابي
+const REPO_OWNER = "halasomy22-ai"; 
+const REPO_NAME = "school-system";   
+const FILE_PATH = "db.json";         
 
-// الرابط الرسمي والمصلح لـ GitHub API ليعمل دون أي أخطاء اتصال سحابية
-const API_URL = `https://github.com{REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+// ✅ تم الإصلاح الإجباري: فرض الرابط الرسمي بشكل نصي صلب وثابت لمنع أي تداخل أو تشويه برمي
+const API_URL = "https://github.com";
 
 // دالة مساعدة داخلية لجلب محتويات الملف السحابي والبصمة (sha)
 async function fetchCloudData() {
@@ -30,7 +30,7 @@ async function fetchCloudData() {
     }
 
     if (!response.ok) {
-      throw new Error(`فشل في الاتصال بجيت هوب: ${response.status}`);
+      throw new Error(`فشل الاتصال بجيت هوب: ${response.status}`);
     }
 
     const data = await response.json();
