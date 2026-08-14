@@ -15,7 +15,6 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
       setLoading(true);
       const cloudUsers = await getAllSystemUsers();
       
-      // وضع حسابات افتراضية أساسية في حال كانت القاعدة السحابية فارغة تماماً
       const defaultUsers = [
         { id: '1', name: "عثمان صديق", loginName: "admin", role: "أدمن", pin: "123", permissions: { students: true, classes: true, teachers: true, finance: true, results: true } },
         { id: '2', name: "أستاذ محمد", loginName: "mohamed", role: "معلم", pin: "123456", permissions: { students: true, classes: true, teachers: false, finance: false, results: false } }
@@ -46,7 +45,6 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
       if (u.id === userId) {
         const updatedPermissions = { ...u.permissions, [key]: !u.permissions[key] };
         const updatedUserObj = { ...u, permissions: updatedPermissions };
-        // رفع تعديل الصلاحيات الحالي لـ Supabase فوراً
         addSystemUser(updatedUserObj);
         handlePermissionChange(userId, updatedPermissions);
         return updatedUserObj;
@@ -77,8 +75,8 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
 
     try {
       await addSystemUser(accountCreated);
-      alert(`تم رفع حساب ${newUser.role} بنجاح إلى قاعدة Supabase السحابية!`);
-      await fetchCloudUsers();
+      alert(`تم رفع حساب ${newUser.role} بنجاح إلى قاعدة البيانات السحابية!`);
+      await fetchCloudUsers(); // تحديث القائمة بالاسم الصحيح
       setNewUser({ name: '', loginName: '', pin: '', role: 'معلم', permissions: { students: false, classes: false, teachers: false, finance: false, results: false } });
     } catch (err) {
       alert("فشل رفع البيانات للسحابة");
@@ -86,13 +84,17 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
   };
 
   const handleDeleteUser = async (userId, userName) => {
-    if (userId === '1' || userId === 1) return alert("لا يمكن حذف حساب الأدمن الأساسي!");
+    // حماية حساب الأدمن الأساسي من الحذف بالـ id والـ loginName
+    if (userId === '1' || userId === 1 || userName === 'عثمان صديق') {
+      return alert("لا يمكن حذف حساب الأدمن الأساسي!");
+    }
+    
     const confirmDelete = window.confirm(`هل أنت متأكد من حذف المستخدم "${userName}" نهائياً من السحابة؟`);
     if (confirmDelete) {
       try {
         await deleteSystemUser(userId);
-        alert("تم حذف المستخدم بنجاح من السحابة!");
-        await fetchCloudUsers();
+        alert("تم حذف المستخدم بنجاح من السحابة! 🗑️");
+        await fetchCloudUsers(); // ✅ تم الإصلاح: استدعاء الدالة الصحيحة لتحديث الشاشة فوراً
       } catch (err) {
         alert("حدث خطأ أثناء الحذف");
       }
@@ -125,9 +127,9 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
         </form>
       </div>
 
-      {/* جدول عرض وتعديل الصلاحيات وحذف المستخدمين سحابياً */}
+      {/* جدول عرض وتعديل الصلاحيات وحذف المستخدمين */}
       <div style={{ flex: '2 1 450px', background: '#ffffff', padding: '25px', borderRadius: '20px', border: '1px solid #e1e8f0', overflowX: 'auto', boxShadow: '0 8px 20px rgba(0,0,0,0.02)' }}>
-        <h3 style={{ color: '#1a365d', margin: '0 0 15px 0', borderBottom: '2px solid #f0f4f8', paddingBottom: '10px', fontWeight: '800' }}>👥 صلاحيات الحسابات السحابية (Supabase)</h3>
+        <h3 style={{ color: '#1a365d', margin: '0 0 15px 0', borderBottom: '2px solid #f0f4f8', paddingBottom: '10px', fontWeight: '800' }}>👥 صلاحيات الحسابات السحابية</h3>
         {loading ? (
           <p style={{ textAlign: 'center', color: '#1a365d', fontWeight: '600' }}>جاري جلب البيانات من السحابة...</p>
         ) : (
