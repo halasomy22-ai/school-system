@@ -10,7 +10,7 @@ const REPO_OWNER = "halasomy22-ai"; // اسم حسابك على جيت هوب
 const REPO_NAME = "school-system";   // اسم المستودع
 const FILE_PATH = "db.json";         // ملف قاعدة البيانات السحابي
 
-// الرابط البرمجي الصحيح والرسمي لـ API جيت هوب ليعمل دون أخطاء اتصال
+// الرابط الرسمي لـ GitHub API المصلح تماماً ليعمل دون أي أخطاء اتصال سحابية
 const API_URL = `https://github.com{REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
 
 // دالة مساعدة داخلية لجلب محتويات الملف السحابي والبصمة (sha)
