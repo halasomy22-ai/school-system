@@ -11,7 +11,7 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
 
   // ✅ فرض الرابط البرمجي الرسمي المباشر والآمن لـ API جيت هوب لكسر حظر الـ CORS نهائياً
   const CLOUD_API_URL = "https://github.com";
-  const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN || "";
+  const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN || "";
 
   const fetchCloudUsers = async () => {
     try {
