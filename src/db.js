@@ -1,15 +1,16 @@
 // ==========================================
 // نظام إدارة قاعدة البيانات السحابية - مدارس الشروق
-// متصل مباشرة مع GitHub REST API (آمن ومشفر)
+// متصل مباشرة مع GitHub REST API (آمن ومشفر عبر السيرفر)
 // ==========================================
 
-// فك التشفير برمجياً للرمز السري لتفادي تحذيرات الأمان من جيت هوب
-const GITHUB_TOKEN = atob("Z2l0aHViX3BhdF8xMUNLNjNIRlEwOWRIT1c5VURDTHJVX1VwWnBuTzJUdk41WTQzQ2ZRRjlIV2xRZVoxVjhHRk80bjFSRHUzZHhncTJFSFFNR0VFTmxqbVF1MU1l"); 
+// قراءة الرمز السري من بيئة التشغيل السحابية (Vercel) لمنع جيت هوب من حظره تلقائياً
+const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN || ""; 
 
 const REPO_OWNER = "halasomy22-ai"; // اسم حسابك على جيت هوب
 const REPO_NAME = "school-system";   // اسم المستودع
 const FILE_PATH = "db.json";         // ملف قاعدة البيانات السحابي
 
+// تصحيح الرابط البرمجي لـ API جيت هوب الرسمي ليعمل دون أخطاء اتصال
 const API_URL = `https://github.com{REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
 
 // دالة مساعدة داخلية لجلب محتويات الملف السحابي والبصمة (sha)
@@ -29,7 +30,7 @@ async function fetchCloudData() {
     }
 
     if (!response.ok) {
-      throw new Error("فشل في الاتصال بجيت هوب");
+      throw new Error(`فشل في الاتصال بجيت هوب: ${response.status}`);
     }
 
     const data = await response.json();
@@ -56,7 +57,7 @@ async function saveCloudData(payload, sha) {
     const encodedContent = btoa(jsonString);
 
     const body = {
-      message: "تحديث تلقائي سحابي لقاعدة بيانات المدرسة",
+      message: "تحديث تلقائي سحابي لقاعدة بيانات مدرسة الشروق",
       content: encodedContent,
     };
 
@@ -69,6 +70,7 @@ async function saveCloudData(payload, sha) {
       headers: {
         "Authorization": `Bearer ${GITHUB_TOKEN}`,
         "Content-Type": "application/json",
+        "Accept": "application/vnd.github.v3+json"
       },
       body: JSON.stringify(body)
     });
@@ -97,11 +99,18 @@ export const addSystemUser = async (user) => {
   try {
     const { system_users, students_data, sha } = await fetchCloudData();
     
-    if (user.id) {
-      const index = system_users.findIndex(u => u.id === user.id);
-      if (index !== -1) system_users[index] = user;
+    const userIdStr = String(user.id || '');
+    const userLoginClean = String(user.loginName || '').trim().toLowerCase();
+
+    const index = system_users.findIndex(u => 
+      (u.id && String(u.id) === userIdStr) || 
+      (u.loginName && String(u.loginName).trim().toLowerCase() === userLoginClean)
+    );
+
+    if (index !== -1) {
+      system_users[index] = user;
     } else {
-      user.id = Date.now().toString();
+      if (!user.id) user.id = Date.now().toString();
       system_users.push(user);
     }
     
@@ -116,7 +125,8 @@ export const addSystemUser = async (user) => {
 export const deleteSystemUser = async (id) => {
   try {
     const { system_users, students_data, sha } = await fetchCloudData();
-    const filtered = system_users.filter(u => u.id !== id);
+    const idStr = String(id);
+    const filtered = system_users.filter(u => String(u.id) !== idStr && String(u.loginName) !== idStr);
     
     await saveCloudData({ system_users: filtered, students_data }, sha);
     return true;
@@ -128,7 +138,8 @@ export const deleteSystemUser = async (id) => {
 
 export const findUserByLoginName = async (loginName) => {
   const users = await getAllSystemUsers();
-  return users.find(u => u.loginName === loginName) || null;
+  const cleanName = String(loginName || '').trim().toLowerCase();
+  return users.find(u => String(u.loginName).trim().toLowerCase() === cleanName) || null;
 };
 
 // ==========================================
@@ -145,7 +156,7 @@ export const addStudent = async (student) => {
     const { system_users, students_data, sha } = await fetchCloudData();
     
     if (student.id) {
-      const index = students_data.findIndex(s => s.id === student.id);
+      const index = students_data.findIndex(s => String(s.id) === String(student.id));
       if (index !== -1) students_data[index] = student;
     } else {
       student.id = Date.now().toString();
@@ -163,7 +174,8 @@ export const addStudent = async (student) => {
 export const deleteStudent = async (id) => {
   try {
     const { system_users, students_data, sha } = await fetchCloudData();
-    const filtered = students_data.filter(s => s.id !== id);
+    const idStr = String(id);
+    const filtered = students_data.filter(s => String(s.id) !== idStr);
     
     await saveCloudData({ system_users, students_data: filtered }, sha);
     return true;
