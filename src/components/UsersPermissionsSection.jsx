@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-// الاستدعاء المباشر والصحيح للدوال المصلحة من ملف db.js الرئيسي
+// استدعاء الدوال السحابية الرسمية والمصلحة من ملف db.js الرئيسي
 import { getAllSystemUsers, addSystemUser, deleteSystemUser } from '../db'; 
 
 export default function UsersPermissionsSection({ handlePermissionChange = () => {}, playHover = () => {} }) {
@@ -11,7 +11,7 @@ export default function UsersPermissionsSection({ handlePermissionChange = () =>
     permissions: { students: false, classes: false, teachers: false, finance: false, results: false }
   });
 
-  // دالة جلب البيانات السحابية الرسمية المعتمدة على ملف db.js
+  // دالة جلب البيانات المعتمدة كلياً على ملف db.js المصلح
   const fetchCloudUsers = async () => {
     try {
       setLoading(true);
